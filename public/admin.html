@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正本围棋 - 内容管理后台</title>
+<style>
+  :root{ --pine-800:#123b30; --pine-700:#1a4d3e; --pine-600:#22604c; --pine-50:#f4f9f7; --text-light:#5c6f68; }
+  *{ box-sizing:border-box; }
+  body{ font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif; background:var(--pine-50); margin:0; padding:30px; color:#1c2b26; }
+  h1{ color:var(--pine-800); font-size:20px; margin-bottom:20px; }
+  .panel{ max-width:900px; margin:0 auto; }
+  .card{ background:#fff; border:1px solid #dbe9e2; border-radius:8px; padding:24px; margin-bottom:20px; }
+  input, textarea{ width:100%; padding:8px 10px; border:1px solid #c9dbd2; border-radius:4px; font-size:14px; margin-bottom:10px; font-family:inherit; }
+  textarea{ min-height:70px; }
+  button{ padding:8px 18px; background:var(--pine-700); color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:13px; }
+  button:hover{ background:var(--pine-800); }
+  button.danger{ background:#a94442; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th, td{ text-align:left; padding:8px; border-bottom:1px solid #e1ece7; }
+  #loginPanel{ max-width:360px; margin:80px auto; }
+  .row-actions{ display:flex; gap:8px; }
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+
+  <div id="loginPanel" class="card">
+    <h1>管理员登录</h1>
+    <input type="password" id="adminPassword" placeholder="请输入管理员密码">
+    <button id="adminLoginBtn">登录</button>
+    <p id="loginError" style="color:#a94442;font-size:12px;"></p>
+  </div>
+
+  <div id="panel" class="panel hidden">
+    <h1>正本围棋 · 围棋知识内容管理</h1>
+
+    <div class="card">
+      <h3 style="margin-top:0;">新增文章</h3>
+      <input type="text" id="newTag" placeholder="分类（例如：基础入门）">
+      <input type="text" id="newTitle" placeholder="标题">
+      <textarea id="newSummary" placeholder="摘要内容"></textarea>
+      <input type="number" id="newSort" placeholder="排序（数字越小越前面）" value="0">
+      <button id="addBtn">新增</button>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">现有文章</h3>
+      <table>
+        <thead><tr><th>分类</th><th>标题</th><th>摘要</th><th>排序</th><th>操作</th></tr></thead>
+        <tbody id="articleList"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  function apiRequest(url, options){
+    options = options || {};
+    options.headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
+    options.credentials = 'same-origin';
+    return fetch(url, options).then(function(res){
+      return res.json().then(function(data){
+        if (!res.ok) throw new Error(data.error || '请求失败');
+        return data;
+      });
+    });
+  }
+
+  document.getElementById('adminLoginBtn').addEventListener('click', function(){
+    var password = document.getElementById('adminPassword').value;
+    apiRequest('/api/admin/login', { method:'POST', body: JSON.stringify({ password: password }) })
+      .then(function(){
+        document.getElementById('loginPanel').classList.add('hidden');
+        document.getElementById('panel').classList.remove('hidden');
+        loadArticles();
+      })
+      .catch(function(err){
+        document.getElementById('loginError').textContent = err.message;
+      });
+  });
+
+  function loadArticles(){
+    apiRequest('/api/articles').then(function(data){
+      var tbody = document.getElementById('articleList');
+      tbody.innerHTML = data.articles.map(function(a){
+        return '<tr data-id="' + a.id + '">' +
+          '<td><input value="' + a.tag + '" data-field="tag"></td>' +
+          '<td><input value="' + a.title + '" data-field="title"></td>' +
+          '<td><textarea data-field="summary">' + a.summary + '</textarea></td>' +
+          '<td><input type="number" value="' + a.sort_order + '" data-field="sortOrder" style="width:70px;"></td>' +
+          '<td class="row-actions"><button class="saveBtn">保存</button><button class="danger delBtn">删除</button></td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('.saveBtn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var tr = btn.closest('tr');
+          var id = tr.getAttribute('data-id');
+          var payload = {
+            tag: tr.querySelector('[data-field="tag"]').value,
+            title: tr.querySelector('[data-field="title"]').value,
+            summary: tr.querySelector('[data-field="summary"]').value,
+            sortOrder: tr.querySelector('[data-field="sortOrder"]').value
+          };
+          apiRequest('/api/articles/' + id, { method:'PUT', body: JSON.stringify(payload) })
+            .then(function(){ alert('已保存'); })
+            .catch(function(err){ alert(err.message); });
+        });
+      });
+      tbody.querySelectorAll('.delBtn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          if (!confirm('确定删除这篇文章？')) return;
+          var id = btn.closest('tr').getAttribute('data-id');
+          apiRequest('/api/articles/' + id, { method:'DELETE' })
+            .then(function(){ loadArticles(); })
+            .catch(function(err){ alert(err.message); });
+        });
+      });
+    });
+  }
+
+  document.getElementById('addBtn').addEventListener('click', function(){
+    var payload = {
+      tag: document.getElementById('newTag').value,
+      title: document.getElementById('newTitle').value,
+      summary: document.getElementById('newSummary').value,
+      sortOrder: document.getElementById('newSort').value
+    };
+    apiRequest('/api/articles', { method:'POST', body: JSON.stringify(payload) })
+      .then(function(){
+        document.getElementById('newTag').value = '';
+        document.getElementById('newTitle').value = '';
+        document.getElementById('newSummary').value = '';
+        document.getElementById('newSort').value = '0';
+        loadArticles();
+      })
+      .catch(function(err){ alert(err.message); });
+  });
+</script>
+</body>
+</html>

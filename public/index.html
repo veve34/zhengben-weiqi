@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正本围棋 - 围棋文化推广与棋具知识平台</title>
+<meta name="description" content="正本围棋，专注于围棋知识普及与棋具介绍的公益推广平台。">
+<style>
+  :root{
+    --pine-900:#0d2b22;
+    --pine-800:#123b30;
+    --pine-700:#1a4d3e;
+    --pine-600:#22604c;
+    --pine-500:#2d7a61;
+    --pine-400:#4c9a80;
+    --pine-100:#e6f0ec;
+    --pine-50:#f4f9f7;
+    --gold:#c9a15a;
+    --text-dark:#1c2b26;
+    --text-light:#5c6f68;
+    --white:#ffffff;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  #home, #knowledge, #equipment, #membership, #register, #login, #member-center, #contact{
+    scroll-margin-top: var(--header-offset, 90px);
+  }
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;
+    color:var(--text-dark);
+    background:var(--pine-50);
+    line-height:1.7;
+  }
+  a{ text-decoration:none; color:inherit; }
+  img{ max-width:100%; display:block; }
+  ul{ list-style:none; }
+
+  .top-bar{ background:var(--pine-900); color:#cfe3da; font-size:12px; }
+  .top-bar .inner{ max-width:1180px; margin:0 auto; padding:6px 20px; display:flex; justify-content:space-between; }
+  .top-bar a{ color:#cfe3da; margin-left:16px; cursor:pointer; }
+  .top-bar a:hover{ color:var(--gold); }
+
+  header{ background:var(--white); border-bottom:3px solid var(--pine-700); position:sticky; top:0; z-index:100; }
+  .header-inner{ max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .logo{ display:flex; align-items:center; gap:12px; }
+  .logo .mark{
+    width:46px; height:46px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--pine-500), var(--pine-800));
+    box-shadow:inset -4px -4px 6px rgba(0,0,0,.35), inset 3px 3px 6px rgba(255,255,255,.15);
+    position:relative;
+  }
+  .logo .mark::after{ content:""; position:absolute; inset:8px; border:1px solid rgba(255,255,255,.25); border-radius:50%; }
+  .logo .text h1{ font-size:22px; color:var(--pine-800); letter-spacing:2px; }
+  .logo .text span{ font-size:12px; color:var(--text-light); letter-spacing:1px; }
+  nav ul{ display:flex; gap:6px; flex-wrap:wrap; }
+  nav a{ display:block; padding:10px 16px; font-size:15px; color:var(--text-dark); border-radius:4px; font-weight:600; cursor:pointer; }
+  nav a:hover, nav a.active{ background:var(--pine-700); color:#fff; }
+
+  .hero{
+    background:
+      linear-gradient(135deg, rgba(13,43,34,.88), rgba(26,77,62,.82)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 2px, transparent 2px 40px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 2px, transparent 2px 40px);
+    color:#fff; padding:70px 20px;
+  }
+  .hero-inner{ max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px; }
+  .hero h2{ font-size:34px; margin-bottom:16px; letter-spacing:2px; }
+  .hero p{ font-size:15px; color:#dcece5; max-width:520px; margin-bottom:24px; }
+  .btn{ display:inline-block; padding:12px 30px; background:var(--gold); color:#2a2110; font-weight:700; border-radius:2px; letter-spacing:1px; transition:.2s; cursor:pointer; border:none; font-family:inherit; font-size:15px; }
+  .btn:hover{ background:#e0bb78; }
+  .btn.outline{ background:transparent; border:1px solid #dcece5; color:#fff; margin-left:12px; }
+  .btn.outline:hover{ background:rgba(255,255,255,.12); }
+
+  .goban{ width:260px; height:260px; background:#d8b171; border:6px solid #8a5a2b; box-shadow:0 12px 30px rgba(0,0,0,.4); position:relative; flex-shrink:0; display:grid; grid-template-columns:repeat(9,1fr); grid-template-rows:repeat(9,1fr); }
+  .goban .cell{ border:1px solid #8a5a2b44; position:relative; }
+  .goban .stone{ width:80%; height:80%; border-radius:50%; position:absolute; top:10%; left:10%; }
+  .goban .stone.black{ background:radial-gradient(circle at 35% 30%, #555, #000); }
+  .goban .stone.white{ background:radial-gradient(circle at 35% 30%, #fff, #cfcfcf); }
+
+  section{ padding:60px 20px; }
+  .section-inner{ max-width:1180px; margin:0 auto; }
+  .section-title{ text-align:center; margin-bottom:40px; }
+  .section-title h3{ font-size:26px; color:var(--pine-800); letter-spacing:2px; }
+  .section-title .en{ font-size:12px; color:var(--pine-400); letter-spacing:4px; text-transform:uppercase; margin-bottom:6px; }
+  .section-title .bar{ width:50px; height:3px; background:var(--gold); margin:14px auto 0; }
+
+  .knowledge-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .card{ background:#fff; border:1px solid #e1ece7; border-radius:6px; overflow:hidden; transition:.25s; }
+  .card:hover{ transform:translateY(-4px); box-shadow:0 10px 24px rgba(18,59,48,.15); border-color:var(--pine-500); }
+  .card .thumb{ height:150px; background:linear-gradient(135deg, var(--pine-600), var(--pine-800)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:38px; }
+  .card .body{ padding:18px 20px; }
+  .card .body .tag{ font-size:12px; color:var(--pine-500); font-weight:700; margin-bottom:8px; display:inline-block; }
+  .card .body h4{ font-size:17px; margin-bottom:10px; color:var(--text-dark); }
+  .card .body p{ font-size:13px; color:var(--text-light); }
+  .empty-hint{ text-align:center; color:var(--text-light); font-size:14px; padding:20px; }
+
+  .equip-section{ background:var(--pine-100); }
+  .equip-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  .equip-card{ background:#fff; border-radius:6px; padding:24px 18px; text-align:center; border-top:3px solid var(--pine-600); }
+  .equip-card .icon{ font-size:34px; margin-bottom:12px; }
+  .equip-card h5{ font-size:16px; margin-bottom:8px; color:var(--pine-800); }
+  .equip-card p{ font-size:13px; color:var(--text-light); }
+
+  .membership-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:24px; max-width:820px; margin:0 auto; }
+  .tier-card{ background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:28px; text-align:center; }
+  .tier-card.pro{ border-color:var(--gold); box-shadow:0 8px 24px rgba(201,161,90,.15); }
+  .tier-card h4{ font-size:18px; color:var(--pine-800); margin-bottom:8px; }
+  .tier-card .price{ font-size:26px; font-weight:700; color:var(--pine-700); margin:10px 0; }
+  .tier-card .price span{ font-size:13px; color:var(--text-light); font-weight:400; }
+  .tier-card ul{ text-align:left; font-size:13px; color:var(--text-light); margin-top:14px; }
+  .tier-card ul li{ padding:4px 0; }
+  .tier-card .badge{ display:inline-block; background:var(--gold); color:#2a2110; font-size:11px; font-weight:700; padding:2px 10px; border-radius:10px; margin-bottom:8px; }
+
+  .register-section{ background:#fff; }
+  .register-wrap{ max-width:720px; margin:0 auto; background:var(--pine-50); border:1px solid #dbe9e2; border-radius:8px; padding:40px; }
+  .notice{ background:#fbf3e3; border:1px solid #ecd7a3; color:#7a5a12; font-size:13px; padding:12px 16px; border-radius:4px; margin-bottom:26px; }
+  .form-row{ display:flex; gap:16px; margin-bottom:18px; }
+  .form-group{ flex:1; }
+  .form-group.full{ flex:1 1 100%; }
+  .form-group label{ display:block; font-size:13px; color:var(--text-dark); margin-bottom:6px; font-weight:600; }
+  .form-group label .req{ color:#c0392b; }
+  .form-group input, .form-group select{ width:100%; padding:10px 12px; border:1px solid #c9dbd2; border-radius:4px; font-size:14px; background:#fff; color:var(--text-dark); }
+  .form-group input:focus, .form-group select:focus{ outline:none; border-color:var(--pine-500); box-shadow:0 0 0 2px rgba(45,122,97,.15); }
+  .code-row{ display:flex; gap:10px; }
+  .code-row input{ flex:1; }
+  .code-btn{ flex-shrink:0; padding:0 16px; background:var(--pine-600); color:#fff; border:none; border-radius:4px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.2s; }
+  .code-btn:hover{ background:var(--pine-700); }
+  .code-btn:disabled{ background:#a9bdb4; cursor:not-allowed; }
+  .agree-row{ display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text-light); margin:18px 0 24px; }
+  .agree-row a{ color:var(--pine-600); font-weight:600; text-decoration:underline; }
+  .agree-row a:hover{ color:var(--pine-800); }
+  .switch-link{ text-align:center; font-size:13px; color:var(--text-light); margin-top:16px; }
+  .switch-link a{ color:var(--pine-600); font-weight:600; text-decoration:underline; cursor:pointer; }
+
+  .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(13,43,34,.55); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{ background:#fff; width:100%; max-width:640px; max-height:80vh; border-radius:8px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+  .modal-header{ padding:18px 24px; border-bottom:1px solid #e1ece7; display:flex; align-items:center; justify-content:space-between; }
+  .modal-header h4{ font-size:17px; color:var(--pine-800); }
+  .modal-close{ background:none; border:none; font-size:20px; line-height:1; color:var(--text-light); cursor:pointer; }
+  .modal-close:hover{ color:var(--pine-700); }
+  .modal-body{ padding:20px 24px; overflow-y:auto; font-size:13px; color:var(--text-dark); }
+  .modal-body h5{ font-size:14px; color:var(--pine-700); margin:16px 0 6px; }
+  .modal-body h5:first-child{ margin-top:0; }
+  .modal-body p{ margin-bottom:8px; color:var(--text-light); }
+  .modal-footer{ padding:14px 24px; border-top:1px solid #e1ece7; text-align:right; }
+  .modal-footer button{ padding:9px 22px; background:var(--pine-700); color:#fff; border:none; border-radius:4px; font-size:13px; cursor:pointer; }
+  .modal-footer button:hover{ background:var(--pine-800); }
+  .submit-btn{ width:100%; padding:13px; background:var(--pine-700); color:#fff; border:none; border-radius:4px; font-size:15px; font-weight:700; letter-spacing:2px; cursor:pointer; transition:.2s; }
+  .submit-btn:hover{ background:var(--pine-800); }
+  .form-msg{ display:none; margin-top:14px; padding:10px 14px; border-radius:4px; font-size:13px; }
+  .form-msg.ok{ background:#e5f3ec; color:var(--pine-800); border:1px solid var(--pine-400); }
+  .form-msg.err{ background:#fbeaea; color:#9c3a3a; border:1px solid #e3b0b0; }
+
+  .member-card{ max-width:520px; margin:0 auto; background:var(--pine-50); border:1px solid #dbe9e2; border-radius:8px; padding:36px; }
+  .member-card .row{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #d3e3db; font-size:14px; }
+  .member-card .row span:first-child{ color:var(--text-light); }
+  .member-card .row span:last-child{ font-weight:600; color:var(--text-dark); }
+  .member-card .tier-tag{ display:inline-block; background:var(--pine-600); color:#fff; font-size:12px; padding:2px 10px; border-radius:10px; }
+
+  .about-section{ background:var(--pine-900); color:#d7e6de; }
+  .about-grid{ display:grid; grid-template-columns:2fr 1fr; gap:50px; }
+  .about-grid h3{ color:#fff; font-size:22px; margin-bottom:18px; letter-spacing:1px; }
+  .about-grid p{ font-size:14px; color:#b9ccc2; margin-bottom:12px; }
+  .contact-box h4{ color:#fff; font-size:16px; margin-bottom:16px; }
+  .contact-box ul li{ font-size:13px; color:#b9ccc2; margin-bottom:10px; padding-left:18px; position:relative; }
+  .contact-box ul li::before{ content:"◆"; position:absolute; left:0; top:1px; color:var(--gold); font-size:10px; }
+
+  footer{ background:var(--pine-900); border-top:1px solid rgba(255,255,255,.08); color:#93a9a0; font-size:12px; text-align:center; padding:22px 20px; }
+  footer p{ margin:4px 0; }
+  footer a{ color:#93a9a0; }
+  footer a:hover{ color:var(--gold); }
+
+  @media (max-width:900px){
+    .hero-inner{ flex-direction:column; }
+    nav ul{ flex-wrap:wrap; }
+    .knowledge-grid{ grid-template-columns:repeat(2,1fr); }
+    .equip-grid{ grid-template-columns:repeat(2,1fr); }
+    .membership-grid{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; }
+    .form-row{ flex-direction:column; gap:0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="inner">
+      <span>欢迎访问正本围棋 · 围棋文化推广公益平台</span>
+      <span>
+        <a data-nav="login" data-guest-only>登录</a>
+        <a data-nav="register" data-guest-only>会员注册</a>
+        <a data-nav="member-center" data-member-only style="display:none">会员中心</a>
+        <a data-nav="contact">联系我们</a>
+      </span>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="mark"></div>
+        <div class="text">
+          <h1>正本围棋</h1>
+          <span>ZHENGBEN WEIQI · 围棋文化推广平台</span>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a data-nav="home" class="active">首页</a></li>
+          <li><a data-nav="knowledge">围棋知识</a></li>
+          <li><a data-nav="equipment">棋具介绍</a></li>
+          <li><a data-nav="membership">会员方案</a></li>
+          <li><a data-nav="register" data-guest-only>会员注册</a></li>
+          <li><a data-nav="member-center" data-member-only style="display:none">会员中心</a></li>
+          <li><a data-nav="contact">关于我们</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div id="home" class="hero">
+    <div class="hero-inner">
+      <div>
+        <h2>传承黑白之道，弘扬千年棋艺</h2>
+        <p>正本围棋致力于围棋文化的公益普及与推广，系统整理围棋基础知识、规则礼仪与棋具文化，帮助更多爱好者走进围棋的世界。</p>
+        <button class="btn" data-nav="knowledge">浏览围棋知识</button>
+        <button class="btn outline" data-nav="register" data-guest-only>立即注册会员</button>
+        <button class="btn outline" data-nav="member-center" data-member-only style="display:none">进入会员中心</button>
+      </div>
+      <div class="goban" id="goban"></div>
+    </div>
+  </div>
+
+  <section id="knowledge">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Weiqi Knowledge</div>
+        <h3>围棋知识</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="knowledge-grid" id="knowledgeGrid">
+        <div class="empty-hint">正在载入内容…</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipment" class="equip-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Go Equipment</div>
+        <h3>棋具介绍</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="equip-grid">
+        <div class="equip-card"><div class="icon">▦</div><h5>棋盘</h5><p>标准十九路棋盘，常见材质有木质、竹制等，讲究纹理与手感。</p></div>
+        <div class="equip-card"><div class="icon">●</div><h5>黑白棋子</h5><p>棋子材质多为云子、玛瑙、贝壳等，圆润饱满，触感温润。</p></div>
+        <div class="equip-card"><div class="icon">▢</div><h5>棋盒（棋笥）</h5><p>用于盛放棋子，常见木盒与藤编款式，兼具收纳与观赏价值。</p></div>
+        <div class="equip-card"><div class="icon">⏱</div><h5>计时器</h5><p>正式比赛常用围棋专用计时器，用于读秒与限时对弈。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 会员方案说明：目前仅供了解，付费功能尚未开放 -->
+  <section id="membership">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Membership</div>
+        <h3>会员方案</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="membership-grid">
+        <div class="tier-card">
+          <h4>基础会员</h4>
+          <div class="price">免费</div>
+          <ul>
+            <li>浏览全部围棋知识文章</li>
+            <li>浏览棋具介绍内容</li>
+            <li>会员中心基本资料管理</li>
+          </ul>
+        </div>
+        <div class="tier-card pro">
+          <span class="badge">规划中</span>
+          <h4>进阶会员</h4>
+          <div class="price">敬请期待 <span>/ 具体资费另行公告</span></div>
+          <ul>
+            <li>进阶棋谱与专题课程（规划中）</li>
+            <li>棋具优先购买与专属优惠（规划中）</li>
+            <li>社群交流与专属活动（规划中）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 会员注册 -->
+  <section id="register" class="register-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Member Registration</div>
+        <h3>个人会员注册</h3>
+        <div class="bar"></div>
+      </div>
+
+      <div class="register-wrap">
+        <div class="notice">
+          根据国家网络实名管理相关规定，注册本平台会员需完成手机号码实名核验（手机号已由运营商完成实名登记），请填写真实有效的手机号码以接收验证码。
+        </div>
+
+        <form id="registerForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>真实姓名 <span class="req">*</span></label>
+              <input type="text" name="realName" placeholder="请输入您的真实姓名" required>
+            </div>
+            <div class="form-group">
+              <label>登录密码 <span class="req">*</span></label>
+              <input type="password" name="password" placeholder="至少6位" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>手机号码 <span class="req">*</span></label>
+              <input type="tel" name="phone" placeholder="请输入常用手机号" maxlength="11" required>
+            </div>
+            <div class="form-group">
+              <label>短信验证码 <span class="req">*</span></label>
+              <div class="code-row">
+                <input type="text" name="smsCode" placeholder="请输入6位验证码" maxlength="6" required>
+                <button type="button" class="code-btn" id="sendCodeBtn">获取验证码</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>棋力水平</label>
+              <select name="level">
+                <option value="">请选择（选填）</option>
+                <option>零基础</option>
+                <option>入门级位</option>
+                <option>业余段位</option>
+                <option>职业棋手</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>常用邮箱</label>
+              <input type="email" name="email" placeholder="用于接收通知（选填）">
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>常住地址</label>
+            <input type="text" name="address" placeholder="请输入常住地址（选填）">
+          </div>
+
+          <div class="agree-row">
+            <input type="checkbox" id="agree" required>
+            <label for="agree">我已阅读并同意<a href="#" class="policy-link" data-policy="terms">《正本围棋用户注册协议》</a>及<a href="#" class="policy-link" data-policy="privacy">《个人信息保护声明》</a>，承诺所填信息真实有效。</label>
+          </div>
+
+          <button type="submit" class="submit-btn">提交注册</button>
+          <div class="form-msg ok" id="registerMsg"></div>
+        </form>
+        <div class="switch-link">已有帐号？<a data-nav="login">直接登录</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 登录 -->
+  <section id="login" class="register-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Member Login</div>
+        <h3>会员登录</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="register-wrap">
+        <form id="loginForm">
+          <div class="form-group full" style="margin-bottom:18px;">
+            <label>手机号码 <span class="req">*</span></label>
+            <input type="tel" name="phone" placeholder="请输入注册时的手机号" maxlength="11" required>
+          </div>
+          <div class="form-group full" style="margin-bottom:18px;">
+            <label>登录密码 <span class="req">*</span></label>
+            <input type="password" name="password" placeholder="请输入密码" required>
+          </div>
+          <button type="submit" class="submit-btn">登录</button>
+          <div class="form-msg ok" id="loginMsg"></div>
+        </form>
+        <div class="switch-link">还没有帐号？<a data-nav="register">立即注册</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 会员中心 -->
+  <section id="member-center" class="register-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Member Center</div>
+        <h3>会员中心</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="member-card" id="memberCard">
+        <div class="empty-hint">载入中…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 用户注册协议 弹窗 -->
+  <div class="modal-overlay" id="modal-terms">
+    <div class="modal-box">
+      <div class="modal-header"><h4>正本围棋用户注册协议</h4><button class="modal-close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <h5>一、协议的接受</h5>
+        <p>欢迎注册成为正本围棋会员。您在勾选同意本协议并完成注册前，应仔细阅读本协议全部内容。您一旦完成注册，即视为已充分理解并同意接受本协议的全部约束。</p>
+        <h5>二、账号注册与实名核验</h5>
+        <p>为符合国家网络实名管理相关规定，注册本平台会员须提供真实姓名及本人常用手机号码，并通过短信验证码完成手机号实名核验。您应确保所提交信息真实、准确、完整，如信息发生变更应及时更新。</p>
+        <p>因提供虚假信息导致的一切后果由用户本人承担，正本围棋有权对信息不实的账号采取限制或暂停服务等措施。</p>
+        <h5>三、账号使用规范</h5>
+        <p>用户应妥善保管账号与密码，不得将账号转让、出借他人使用。用户在平台内的一切行为应遵守国家法律法规及公序良俗，不得利用本平台从事任何违法违规活动。</p>
+        <h5>四、服务内容</h5>
+        <p>正本围棋目前为用户提供围棋知识普及、棋具文化介绍等基础会员服务，进阶付费服务详情将于正式开放前另行公告。平台有权根据实际运营情况调整、增减服务内容。</p>
+        <h5>五、协议的变更</h5>
+        <p>正本围棋有权在必要时修订本协议条款，修订后的协议将在平台内公布，若您继续使用本平台服务，即视为接受修订后的协议。</p>
+      </div>
+      <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
+    </div>
+  </div>
+
+  <!-- 个人信息保护声明 弹窗 -->
+  <div class="modal-overlay" id="modal-privacy">
+    <div class="modal-box">
+      <div class="modal-header"><h4>正本围棋个人信息保护声明</h4><button class="modal-close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <h5>一、信息收集范围</h5>
+        <p>为完成会员实名注册及提供相应服务，我们将收集您的真实姓名、手机号码、短信验证码、登录密码等必要信息，以及您自愿填写的邮箱、常住地址、棋力水平等信息。我们通过手机号码短信验证的方式完成实名核验，不会额外要求您提供身份证号码等更为敏感的证件信息。</p>
+        <h5>二、信息使用目的</h5>
+        <p>您提供的信息仅用于会员身份核验、账号安全保护及必要的服务通知，不会用于本声明约定之外的用途。</p>
+        <h5>三、信息存储与保密</h5>
+        <p>我们将采取符合行业标准的安全技术措施保护您的个人信息（包括密码加密存储、传输加密等），防止信息被未经授权的访问、披露、篡改或毁损。除法律法规要求或经您本人同意外，我们不会向第三方提供、公开或出售您的个人信息。</p>
+        <h5>四、您的权利</h5>
+        <p>您有权查询、更正您的个人信息，如需注销账号或删除个人信息，可通过平台留下的联系方式与我们联系，我们将在法律法规允许的范围内予以处理。</p>
+        <h5>五、声明的更新</h5>
+        <p>本声明可能随平台服务的调整及法律法规的变化进行更新，更新后的内容将在本平台公布。</p>
+      </div>
+      <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
+    </div>
+  </div>
+
+  <section id="contact" class="about-section">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div>
+          <h3>关于正本围棋</h3>
+          <p>正本围棋是一个专注于围棋文化推广与知识普及的信息平台，以"传承棋道，正本清源"为宗旨，面向广大围棋爱好者提供系统性的围棋基础知识与棋具文化介绍。</p>
+          <p>平台内容涵盖围棋规则、术语、礼仪与历史文化等方面，旨在帮助初学者建立正确的围棋认知，同时为资深爱好者提供交流与学习的空间。</p>
+        </div>
+        <div class="contact-box">
+          <h4>联系方式</h4>
+          <ul>
+            <li>主办单位：杭州精尖硬核棋道信息科技有限公司</li>
+            <li>网站名称：正本围棋</li>
+            <li>网站域名：jingjianyinghe.com</li>
+            <li>邮箱：contact@jingjianyinghe.com</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>网站名称：正本围棋 &nbsp;|&nbsp; 网站域名：jingjianyinghe.com</p>
+    <p>主办者名称：杭州精尖硬核棋道信息科技有限公司</p>
+    <p>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">浙ICP备2026043380号</a>
+      &nbsp;|&nbsp; 网站备案号：浙ICP备2026043380号-1
+    </p>
+    <p>© 2026 正本围棋 版权所有</p>
+  </footer>
+
+<script>
+  (function(){
+    var goban = document.getElementById('goban');
+    var total = 81;
+    var stoneCells = [20, 22, 30, 32, 41, 50, 58, 60];
+    var blackCells = [20, 32, 41, 58];
+    for (var i = 0; i < total; i++){
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      if (stoneCells.indexOf(i) !== -1){
+        var stone = document.createElement('div');
+        stone.className = 'stone ' + (blackCells.indexOf(i) !== -1 ? 'black' : 'white');
+        cell.appendChild(stone);
+      }
+      goban.appendChild(cell);
+    }
+  })();
+
+  function apiRequest(url, options){
+    options = options || {};
+    options.headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
+    options.credentials = 'same-origin';
+    return fetch(url, options).then(function(res){
+      return res.json().then(function(data){
+        if (!res.ok) throw new Error(data.error || '请求失败');
+        return data;
+      });
+    });
+  }
+
+  function showSection(name){
+    document.querySelectorAll('section, .hero').forEach(function(s){ s.style.display = ''; });
+    document.querySelectorAll('nav a').forEach(function(a){ a.classList.remove('active'); });
+    var navLink = document.querySelector('nav a[data-nav="' + name + '"]');
+    if (navLink) navLink.classList.add('active');
+    var target = document.getElementById(name);
+    if (target){
+      target.scrollIntoView({behavior:'instant', block:'start'});
+      if (history.replaceState) history.replaceState(null, '', '#' + name);
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-nav]');
+    if (!el) return;
+    e.preventDefault();
+    showSection(el.getAttribute('data-nav'));
+  });
+
+  function loadArticles(){
+    var grid = document.getElementById('knowledgeGrid');
+    apiRequest('/api/articles').then(function(data){
+      if (!data.articles || !data.articles.length){
+        grid.innerHTML = '<div class="empty-hint">暂无内容</div>';
+        return;
+      }
+      grid.innerHTML = data.articles.map(function(a){
+        return '<div class="card"><div class="thumb">' + a.title.charAt(0) + '</div><div class="body">' +
+          '<span class="tag">' + a.tag + '</span><h4>' + a.title + '</h4><p>' + a.summary + '</p></div></div>';
+      }).join('');
+    }).catch(function(){
+      grid.innerHTML = '<div class="empty-hint">内容载入失败，请稍后重试</div>';
+    });
+  }
+
+  var sendCodeBtn = document.getElementById('sendCodeBtn');
+  var codeSeconds = 60;
+  var codeTimer = null;
+  sendCodeBtn.addEventListener('click', function(){
+    var phoneInput = document.querySelector('#registerForm input[name="phone"]');
+    var phone = phoneInput.value.trim();
+    if (!/^1\d{10}$/.test(phone)){
+      alert('请先输入正确的11位手机号码');
+      phoneInput.focus();
+      return;
+    }
+    sendCodeBtn.disabled = true;
+    apiRequest('/api/auth/send-code', { method:'POST', body: JSON.stringify({ phone: phone }) })
+      .then(function(){
+        var remaining = codeSeconds;
+        sendCodeBtn.textContent = remaining + ' 秒后重新获取';
+        codeTimer = setInterval(function(){
+          remaining--;
+          if (remaining <= 0){
+            clearInterval(codeTimer);
+            sendCodeBtn.disabled = false;
+            sendCodeBtn.textContent = '获取验证码';
+          } else {
+            sendCodeBtn.textContent = remaining + ' 秒后重新获取';
+          }
+        }, 1000);
+      })
+      .catch(function(err){
+        alert(err.message);
+        sendCodeBtn.disabled = false;
+      });
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = e.target;
+    var msg = document.getElementById('registerMsg');
+    var payload = {
+      realName: form.realName.value.trim(),
+      phone: form.phone.value.trim(),
+      smsCode: form.smsCode.value.trim(),
+      password: form.password.value,
+      level: form.level.value,
+      email: form.email.value.trim(),
+      address: form.address.value.trim()
+    };
+    apiRequest('/api/auth/register', { method:'POST', body: JSON.stringify(payload) })
+      .then(function(){
+        msg.textContent = '注册成功，欢迎加入正本围棋会员大家庭！';
+        msg.className = 'form-msg ok';
+        msg.style.display = 'block';
+        form.reset();
+        refreshSession();
+        setTimeout(function(){ showSection('member-center'); }, 1000);
+      })
+      .catch(function(err){
+        msg.textContent = err.message;
+        msg.className = 'form-msg err';
+        msg.style.display = 'block';
+      });
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = e.target;
+    var msg = document.getElementById('loginMsg');
+    apiRequest('/api/auth/login', {
+      method:'POST',
+      body: JSON.stringify({ phone: form.phone.value.trim(), password: form.password.value })
+    }).then(function(){
+      msg.textContent = '登录成功！';
+      msg.className = 'form-msg ok';
+      msg.style.display = 'block';
+      form.reset();
+      refreshSession();
+      setTimeout(function(){ showSection('member-center'); }, 600);
+    }).catch(function(err){
+      msg.textContent = err.message;
+      msg.className = 'form-msg err';
+      msg.style.display = 'block';
+    });
+  });
+
+  function renderMemberCard(member){
+    var card = document.getElementById('memberCard');
+    if (!member){
+      card.innerHTML = '<div class="empty-hint">尚未登录，请先<a data-nav="login" style="color:var(--pine-600);text-decoration:underline;cursor:pointer;">前往登录</a></div>';
+      return;
+    }
+    card.innerHTML =
+      '<div class="row"><span>真实姓名</span><span>' + member.real_name + '</span></div>' +
+      '<div class="row"><span>手机号码</span><span>' + member.phone + '</span></div>' +
+      '<div class="row"><span>棋力水平</span><span>' + (member.level || '未填写') + '</span></div>' +
+      '<div class="row"><span>会员等级</span><span class="tier-tag">' + (member.member_tier === 'free' ? '基础会员' : member.member_tier) + '</span></div>' +
+      '<div class="row"><span>注册时间</span><span>' + member.created_at + '</span></div>' +
+      '<button class="submit-btn" style="margin-top:20px;" id="logoutBtn">退出登录</button>';
+    document.getElementById('logoutBtn').addEventListener('click', function(){
+      apiRequest('/api/auth/logout', { method:'POST' }).then(function(){
+        refreshSession();
+        showSection('home');
+      });
+    });
+  }
+
+  function refreshSession(){
+    return apiRequest('/api/member/me').then(function(data){
+      document.querySelectorAll('[data-member-only]').forEach(function(el){ el.style.display = ''; });
+      document.querySelectorAll('[data-guest-only]').forEach(function(el){ el.style.display = 'none'; });
+      renderMemberCard(data.member);
+      return true;
+    }).catch(function(){
+      document.querySelectorAll('[data-member-only]').forEach(function(el){ el.style.display = 'none'; });
+      document.querySelectorAll('[data-guest-only]').forEach(function(el){ el.style.display = ''; });
+      renderMemberCard(null);
+      return false;
+    });
+  }
+
+  document.querySelectorAll('.policy-link').forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var modal = document.getElementById('modal-' + this.getAttribute('data-policy'));
+      if (modal) modal.classList.add('open');
+    });
+  });
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.classList.remove('open'); });
+  });
+  document.querySelectorAll('[data-close]').forEach(function(btn){
+    btn.addEventListener('click', function(){ btn.closest('.modal-overlay').classList.remove('open'); });
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m){ m.classList.remove('open'); });
+  });
+
+  function updateHeaderOffset(){
+    var header = document.querySelector('header');
+    document.documentElement.style.setProperty('--header-offset', (header.offsetHeight + 16) + 'px');
+  }
+  updateHeaderOffset();
+  window.addEventListener('resize', updateHeaderOffset);
+
+  loadArticles();
+  refreshSession().then(function(){
+    var hash = location.hash.replace('#', '');
+    if (hash) showSection(hash);
+  });
+</script>
+
+</body>
+</html>
