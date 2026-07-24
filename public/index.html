@@ -298,7 +298,7 @@
 
       <div class="register-wrap">
         <div class="notice">
-          根据国家网络实名管理相关规定，注册本平台会员需填写真实身份信息，信息仅用于身份核验，我们将依法予以保密。
+          根据国家网络实名管理相关规定，注册本平台会员需填写真实身份信息，信息仅用于身份核验，我们将依法予以保密。提交后需等待管理员审核，审核通过后方可登录使用。
         </div>
 
         <form id="registerForm">
@@ -551,12 +551,10 @@
     };
     apiRequest('/api/auth/register', { method:'POST', body: JSON.stringify(payload) })
       .then(function(){
-        msg.textContent = '注册成功，欢迎加入正本围棋会员大家庭！';
+        msg.textContent = '注册申请已提交，请等待管理员审核，审核通过后即可使用手机号与密码登录。';
         msg.className = 'form-msg ok';
         msg.style.display = 'block';
         form.reset();
-        refreshSession();
-        setTimeout(function(){ showSection('member-center'); }, 1000);
       })
       .catch(function(err){
         msg.textContent = err.message;

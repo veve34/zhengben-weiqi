@@ -16,6 +16,7 @@ db.exec(`
     email TEXT DEFAULT '',
     address TEXT DEFAULT '',
     member_tier TEXT NOT NULL DEFAULT 'free',
+    status TEXT NOT NULL DEFAULT 'pending',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 

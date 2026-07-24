@@ -33,13 +33,11 @@ router.post('/register', function (req, res) {
   var idCardEncrypted = encryptIdCard(idCard);
   var idCardLast4 = idCard.slice(-4);
 
-  var result = db.prepare(
-    'INSERT INTO users (real_name, phone, id_card_encrypted, id_card_last4, password_hash, level, email, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  db.prepare(
+    "INSERT INTO users (real_name, phone, id_card_encrypted, id_card_last4, password_hash, level, email, address, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')"
   ).run(realName, phone, idCardEncrypted, idCardLast4, passwordHash, level, email, address);
 
-  var token = jwt.sign({ id: result.lastInsertRowid, phone: phone }, process.env.JWT_SECRET, { expiresIn: '7d' });
-  res.cookie('member_token', token, { httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 3600 * 1000 });
-  res.json({ ok: true });
+  res.json({ ok: true, status: 'pending' });
 });
 
 router.post('/login', function (req, res) {
@@ -49,6 +47,12 @@ router.post('/login', function (req, res) {
   var user = db.prepare('SELECT * FROM users WHERE phone = ?').get(phone);
   if (!user || !bcrypt.compareSync(password, user.password_hash)) {
     return res.status(401).json({ error: '手机号或密码错误' });
+  }
+  if (user.status === 'pending') {
+    return res.status(403).json({ error: '您的账号正在审核中，请耐心等待', status: 'pending' });
+  }
+  if (user.status === 'rejected') {
+    return res.status(403).json({ error: '您的注册申请未通过审核，如有疑问请联系客服', status: 'rejected' });
   }
 
   var token = jwt.sign({ id: user.id, phone: user.phone }, process.env.JWT_SECRET, { expiresIn: '7d' });

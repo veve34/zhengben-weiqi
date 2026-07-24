@@ -21,6 +21,7 @@ npm start
 - `routes/member.js` — 会员中心资料查询
 - `routes/articles.js` — 围棋知识文章（公开查询 + 后台管理）
 - `routes/admin.js` — 管理员登录
+- `routes/adminMembers.js` — 会员审核（查询/通过/驳回）
 - `services/idCardValidator.js` — 身份证号格式与校验码验证（GB 11643 公开算法，纯本地计算，不依赖任何外部服务）
 - `services/idCardCrypto.js` — 身份证号加密存储（Node.js 内建 crypto 模块，AES-256-GCM）
 - `public/index.html` — 会员网站前台
@@ -31,6 +32,10 @@ npm start
 会员注册收集真实姓名 + 身份证号 + 手机号，身份证号仅做格式与校验码验证（确认号码本身格式合法），**不核实号码是否对应真实存在的人**——这项核实需对接公安部人口信息库，只能通过有牌照的商业服务（阿里云/腾讯云实名认证等）取得，无开源替代方案。目前项目按需求不接入任何此类第三方服务。
 
 身份证号在数据库中以 AES-256-GCM 加密存储（`id_card_encrypted` 字段），仅保留末4位明文（`id_card_last4`）用于前台展示，密钥为 `.env` 中的 `ID_ENCRYPTION_KEY`。
+
+## 会员审核机制
+
+会员注册后状态为 `pending`（待审核），**不会立即登录**，需管理员在 `admin.html` 的「会员审核」列表中手动通过后，状态才会变成 `approved`，此时才能用手机号+密码登录。管理员也可以将会员驳回（`rejected`）或事后改判。已登录会话每次请求都会重新检查数据库中的账号状态，管理员事后驳回已通过的会员，其登录状态会立即失效。
 
 ## 上线前必须完成的事
 

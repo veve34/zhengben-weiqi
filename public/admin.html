@@ -21,6 +21,12 @@
   #loginPanel{ max-width:360px; margin:80px auto; }
   .row-actions{ display:flex; gap:8px; }
   .hidden{ display:none; }
+  select{ padding:8px 10px; border:1px solid #c9dbd2; border-radius:4px; font-size:13px; margin-bottom:14px; }
+  .status-tag{ font-size:12px; padding:2px 8px; border-radius:10px; }
+  .status-pending{ background:#fbf3e3; color:#7a5a12; }
+  .status-approved{ background:#e5f3ec; color:#123b30; }
+  .status-rejected{ background:#fbeaea; color:#9c3a3a; }
+  button.approve{ background:var(--pine-600); }
 </style>
 </head>
 <body>
@@ -33,6 +39,22 @@
   </div>
 
   <div id="panel" class="panel hidden">
+    <h1>正本围棋 · 会员审核</h1>
+
+    <div class="card">
+      <h3 style="margin-top:0;">会员审核</h3>
+      <select id="memberStatusFilter">
+        <option value="pending">待审核</option>
+        <option value="approved">已通过</option>
+        <option value="rejected">已驳回</option>
+        <option value="all">全部</option>
+      </select>
+      <table>
+        <thead><tr><th>姓名</th><th>手机号</th><th>身份证号</th><th>申请时间</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="memberList"></tbody>
+      </table>
+    </div>
+
     <h1>正本围棋 · 围棋知识内容管理</h1>
 
     <div class="card">
@@ -73,11 +95,50 @@
         document.getElementById('loginPanel').classList.add('hidden');
         document.getElementById('panel').classList.remove('hidden');
         loadArticles();
+        loadMembers();
       })
       .catch(function(err){
         document.getElementById('loginError').textContent = err.message;
       });
   });
+
+  var STATUS_LABEL = { pending: '待审核', approved: '已通过', rejected: '已驳回' };
+
+  function loadMembers(){
+    var status = document.getElementById('memberStatusFilter').value;
+    apiRequest('/api/admin/members?status=' + status).then(function(data){
+      var tbody = document.getElementById('memberList');
+      if (!data.members.length){
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#5c6f68;">没有符合条件的会员</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.members.map(function(m){
+        var actions = m.status === 'pending'
+          ? '<button class="approve" data-id="' + m.id + '" data-action="approve">通过</button> <button class="danger" data-id="' + m.id + '" data-action="reject">驳回</button>'
+          : '<button data-id="' + m.id + '" data-action="' + (m.status === 'approved' ? 'reject' : 'approve') + '">' + (m.status === 'approved' ? '改为驳回' : '改为通过') + '</button>';
+        return '<tr>' +
+          '<td>' + m.real_name + '</td>' +
+          '<td>' + m.phone + '</td>' +
+          '<td>**************' + m.id_card_last4 + '</td>' +
+          '<td>' + m.created_at + '</td>' +
+          '<td><span class="status-tag status-' + m.status + '">' + STATUS_LABEL[m.status] + '</span></td>' +
+          '<td class="row-actions">' + actions + '</td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('button[data-action]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-id');
+          var action = btn.getAttribute('data-action');
+          apiRequest('/api/admin/members/' + id + '/' + action, { method:'POST' })
+            .then(function(){ loadMembers(); })
+            .catch(function(err){ alert(err.message); });
+        });
+      });
+    });
+  }
+
+  document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
 
   function loadArticles(){
     apiRequest('/api/articles').then(function(data){
