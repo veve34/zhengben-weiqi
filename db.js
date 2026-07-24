@@ -9,21 +9,13 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     real_name TEXT NOT NULL,
     phone TEXT NOT NULL UNIQUE,
+    id_card_encrypted TEXT NOT NULL,
+    id_card_last4 TEXT NOT NULL,
     password_hash TEXT NOT NULL,
     level TEXT DEFAULT '',
     email TEXT DEFAULT '',
     address TEXT DEFAULT '',
     member_tier TEXT NOT NULL DEFAULT 'free',
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-
-  CREATE TABLE IF NOT EXISTS sms_codes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone TEXT NOT NULL,
-    code TEXT NOT NULL,
-    purpose TEXT NOT NULL DEFAULT 'register',
-    expires_at TEXT NOT NULL,
-    consumed INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 

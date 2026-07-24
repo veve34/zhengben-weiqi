@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/me', requireMember, function (req, res) {
   var user = db.prepare(
-    'SELECT id, real_name, phone, level, email, address, member_tier, created_at FROM users WHERE id = ?'
+    'SELECT id, real_name, phone, id_card_last4, level, email, address, member_tier, created_at FROM users WHERE id = ?'
   ).get(req.member.id);
   if (!user) return res.status(404).json({ error: '找不到会员信息' });
   res.json({ member: user });

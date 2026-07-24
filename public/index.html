@@ -120,11 +120,6 @@
   .form-group label .req{ color:#c0392b; }
   .form-group input, .form-group select{ width:100%; padding:10px 12px; border:1px solid #c9dbd2; border-radius:4px; font-size:14px; background:#fff; color:var(--text-dark); }
   .form-group input:focus, .form-group select:focus{ outline:none; border-color:var(--pine-500); box-shadow:0 0 0 2px rgba(45,122,97,.15); }
-  .code-row{ display:flex; gap:10px; }
-  .code-row input{ flex:1; }
-  .code-btn{ flex-shrink:0; padding:0 16px; background:var(--pine-600); color:#fff; border:none; border-radius:4px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.2s; }
-  .code-btn:hover{ background:var(--pine-700); }
-  .code-btn:disabled{ background:#a9bdb4; cursor:not-allowed; }
   .agree-row{ display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text-light); margin:18px 0 24px; }
   .agree-row a{ color:var(--pine-600); font-weight:600; text-decoration:underline; }
   .agree-row a:hover{ color:var(--pine-800); }
@@ -303,7 +298,7 @@
 
       <div class="register-wrap">
         <div class="notice">
-          根据国家网络实名管理相关规定，注册本平台会员需完成手机号码实名核验（手机号已由运营商完成实名登记），请填写真实有效的手机号码以接收验证码。
+          根据国家网络实名管理相关规定，注册本平台会员需填写真实身份信息，信息仅用于身份核验，我们将依法予以保密。
         </div>
 
         <form id="registerForm">
@@ -313,8 +308,8 @@
               <input type="text" name="realName" placeholder="请输入您的真实姓名" required>
             </div>
             <div class="form-group">
-              <label>登录密码 <span class="req">*</span></label>
-              <input type="password" name="password" placeholder="至少6位" required>
+              <label>身份证号 <span class="req">*</span></label>
+              <input type="text" name="idCard" placeholder="请输入18位身份证号码" maxlength="18" required>
             </div>
           </div>
 
@@ -324,11 +319,8 @@
               <input type="tel" name="phone" placeholder="请输入常用手机号" maxlength="11" required>
             </div>
             <div class="form-group">
-              <label>短信验证码 <span class="req">*</span></label>
-              <div class="code-row">
-                <input type="text" name="smsCode" placeholder="请输入6位验证码" maxlength="6" required>
-                <button type="button" class="code-btn" id="sendCodeBtn">获取验证码</button>
-              </div>
+              <label>登录密码 <span class="req">*</span></label>
+              <input type="password" name="password" placeholder="至少6位" required>
             </div>
           </div>
 
@@ -414,8 +406,8 @@
       <div class="modal-body">
         <h5>一、协议的接受</h5>
         <p>欢迎注册成为正本围棋会员。您在勾选同意本协议并完成注册前，应仔细阅读本协议全部内容。您一旦完成注册，即视为已充分理解并同意接受本协议的全部约束。</p>
-        <h5>二、账号注册与实名核验</h5>
-        <p>为符合国家网络实名管理相关规定，注册本平台会员须提供真实姓名及本人常用手机号码，并通过短信验证码完成手机号实名核验。您应确保所提交信息真实、准确、完整，如信息发生变更应及时更新。</p>
+        <h5>二、账号注册与实名信息</h5>
+        <p>为符合国家网络实名管理相关规定，注册本平台会员须提供真实姓名、身份证号码及本人常用手机号码。您应确保所提交信息真实、准确、完整，如信息发生变更应及时更新。</p>
         <p>因提供虚假信息导致的一切后果由用户本人承担，正本围棋有权对信息不实的账号采取限制或暂停服务等措施。</p>
         <h5>三、账号使用规范</h5>
         <p>用户应妥善保管账号与密码，不得将账号转让、出借他人使用。用户在平台内的一切行为应遵守国家法律法规及公序良俗，不得利用本平台从事任何违法违规活动。</p>
@@ -434,7 +426,7 @@
       <div class="modal-header"><h4>正本围棋个人信息保护声明</h4><button class="modal-close" data-close>&times;</button></div>
       <div class="modal-body">
         <h5>一、信息收集范围</h5>
-        <p>为完成会员实名注册及提供相应服务，我们将收集您的真实姓名、手机号码、短信验证码、登录密码等必要信息，以及您自愿填写的邮箱、常住地址、棋力水平等信息。我们通过手机号码短信验证的方式完成实名核验，不会额外要求您提供身份证号码等更为敏感的证件信息。</p>
+        <p>为完成会员实名注册及提供相应服务，我们将收集您的真实姓名、身份证号码、手机号码、登录密码等必要信息，以及您自愿填写的邮箱、常住地址、棋力水平等信息。身份证号码属于敏感个人信息，我们会加密存储，仅用于身份核验，不会用于本声明约定之外的用途。</p>
         <h5>二、信息使用目的</h5>
         <p>您提供的信息仅用于会员身份核验、账号安全保护及必要的服务通知，不会用于本声明约定之外的用途。</p>
         <h5>三、信息存储与保密</h5>
@@ -544,39 +536,6 @@
     });
   }
 
-  var sendCodeBtn = document.getElementById('sendCodeBtn');
-  var codeSeconds = 60;
-  var codeTimer = null;
-  sendCodeBtn.addEventListener('click', function(){
-    var phoneInput = document.querySelector('#registerForm input[name="phone"]');
-    var phone = phoneInput.value.trim();
-    if (!/^1\d{10}$/.test(phone)){
-      alert('请先输入正确的11位手机号码');
-      phoneInput.focus();
-      return;
-    }
-    sendCodeBtn.disabled = true;
-    apiRequest('/api/auth/send-code', { method:'POST', body: JSON.stringify({ phone: phone }) })
-      .then(function(){
-        var remaining = codeSeconds;
-        sendCodeBtn.textContent = remaining + ' 秒后重新获取';
-        codeTimer = setInterval(function(){
-          remaining--;
-          if (remaining <= 0){
-            clearInterval(codeTimer);
-            sendCodeBtn.disabled = false;
-            sendCodeBtn.textContent = '获取验证码';
-          } else {
-            sendCodeBtn.textContent = remaining + ' 秒后重新获取';
-          }
-        }, 1000);
-      })
-      .catch(function(err){
-        alert(err.message);
-        sendCodeBtn.disabled = false;
-      });
-  });
-
   document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
     var form = e.target;
@@ -584,7 +543,7 @@
     var payload = {
       realName: form.realName.value.trim(),
       phone: form.phone.value.trim(),
-      smsCode: form.smsCode.value.trim(),
+      idCard: form.idCard.value.trim(),
       password: form.password.value,
       level: form.level.value,
       email: form.email.value.trim(),
@@ -635,6 +594,7 @@
     }
     card.innerHTML =
       '<div class="row"><span>真实姓名</span><span>' + member.real_name + '</span></div>' +
+      '<div class="row"><span>身份证号</span><span>**************' + member.id_card_last4 + '</span></div>' +
       '<div class="row"><span>手机号码</span><span>' + member.phone + '</span></div>' +
       '<div class="row"><span>棋力水平</span><span>' + (member.level || '未填写') + '</span></div>' +
       '<div class="row"><span>会员等级</span><span class="tier-tag">' + (member.member_tier === 'free' ? '基础会员' : member.member_tier) + '</span></div>' +
