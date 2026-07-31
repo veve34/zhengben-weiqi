@@ -8,7 +8,7 @@ router.use(requireAdmin);
 
 router.get('/', function (req, res) {
   var rows = db.prepare(
-    'SELECT l.*, u.real_name AS seller_name, u.phone AS seller_phone FROM listings l JOIN users u ON u.id = l.user_id ORDER BY l.id DESC'
+    'SELECT l.*, u.real_name AS seller_name, u.phone AS seller_phone FROM listings l JOIN users u ON u.id = l.user_id ORDER BY l.created_at DESC, l.id DESC'
   ).all();
   res.json({ listings: rows });
 });

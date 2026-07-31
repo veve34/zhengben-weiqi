@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>二手棋具交易 - 正本围棋</title>
-<meta name="description" content="会员之间发布二手棋具信息、留言联系，交易由买卖双方自行线下完成。">
+<meta name="description" content="会员自主发布二手棋具信息、留言联系，交易由买卖双方自行线下完成。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
         <ul>
           <li><a href="index.html">首页</a></li>
           <li><a href="knowledge.html">围棋知识</a></li>
-          <li><a href="marketplace.html" class="active">二手交易</a></li>
+          <li><a href="marketplace.html" class="active">二手棋具交易</a></li>
           <li><a href="membership.html">会员方案</a></li>
           <li><a href="register.html" data-guest-only>会员注册</a></li>
           <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
@@ -31,27 +31,52 @@
     </div>
   </header>
 
-  <!-- 二手棋具交易：仅提供信息发布，交易由买卖双方自行线下完成 -->
-  <section id="marketplace" class="equip-section">
-    <div class="section-inner">
-      <div class="section-title">
-        <div class="en">Secondhand Marketplace</div>
-        <h3>二手棋具交易</h3>
-        <div class="bar"></div>
+  <div class="page-banner">
+    <div class="inner">
+      <div class="en">Secondhand Marketplace</div>
+      <h2>二手棋具交易</h2>
+      <p>会员自主发布闲置棋具信息，浏览后可直接与发布人沟通对接。本板块仅提供信息发布与留言联系服务，交易由双方自行线下完成。</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="market-layout">
+
+      <!-- 左侧主要内容：筛选列 + 卡片 -->
+      <div class="market-main">
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-btn active" data-category="">全部</button>
+        </div>
+        <div id="listingList">
+          <div class="empty-hint">正在载入…</div>
+        </div>
       </div>
-      <div class="notice" style="max-width:760px;margin:0 auto 30px;">
-        本板块仅提供二手棋具信息发布与留言联系服务，交易由买卖双方自行线下完成，正本围棋不参与交易过程、不提供担保。请务必核实对方身份、当面验货，谨防诈骗，切勿提前转账定金。
-      </div>
-      <div style="text-align:center;margin-bottom:24px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-        <select id="categoryFilter" style="padding:9px 14px;border:1px solid #c9dbd2;border-radius:4px;font-size:14px;">
-          <option value="">全部分类</option>
-        </select>
-        <a class="btn" href="login.html" data-guest-only style="display:none;">登录后即可发布</a>
-        <button class="btn" id="openListingFormBtn" data-member-only style="display:none;">发布二手棋具</button>
-      </div>
-      <div class="listing-grid" id="listingGrid">
-        <div class="empty-hint">正在载入…</div>
-      </div>
+
+      <!-- 右侧提示内容 -->
+      <aside class="market-side">
+        <div class="side-card">
+          <h4>平台合规声明</h4>
+          <p>平台不直接经营交易服务，所有信息由会员自主发布。会员均经实名审核，请通过预留方式自主沟通对接。</p>
+        </div>
+
+        <div class="side-card">
+          <h4>交易小贴士</h4>
+          <p>进行交易前，建议先明确物品使用状况，浏览信息后与发布人充分沟通规格、数量、配送方式。</p>
+        </div>
+
+        <div class="side-card highlight" data-guest-only>
+          <h4>注册会员</h4>
+          <p>家中有闲置的棋具想帮它找新主人吗？<br>注册会员，实名认证通过后即可发布信息。</p>
+          <a class="btn" href="register.html">立即注册</a>
+        </div>
+
+        <div class="side-card" data-member-only style="display:none">
+          <h4>发布信息</h4>
+          <p style="margin-bottom:14px;">家中有闲置的棋具？发布信息，让它找到新主人。</p>
+          <button class="btn" id="openListingFormBtn" style="display:block;width:100%;text-align:center;padding:10px;font-size:14px;">发布二手棋具</button>
+        </div>
+      </aside>
+
     </div>
   </section>
 
@@ -70,9 +95,9 @@
               <label>分类</label>
               <select name="category">
                 <option>棋盘</option>
+                <option>棋罐</option>
                 <option>棋子</option>
-                <option>棋钟</option>
-                <option>棋盒</option>
+                <option>计时器</option>
                 <option selected>其他</option>
               </select>
             </div>
@@ -90,7 +115,7 @@
             <input type="text" name="contactInfo" placeholder="电话/微信号等，方便买家联系您" required>
           </div>
           <div class="form-group full" style="margin-bottom:16px;">
-            <label>商品照片（最多5张，JPG/PNG/WEBP） <span class="req">*</span></label>
+            <label>物品照片（最多5张，JPG/PNG/WEBP） <span class="req">*</span></label>
             <input type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple required>
           </div>
           <button type="submit" class="submit-btn">发布</button>
@@ -136,46 +161,61 @@
 
 <script src="js/common.js"></script>
 <script>
+  var currentCategory = '';
+
   function loadListings(){
-    var grid = document.getElementById('listingGrid');
-    var category = document.getElementById('categoryFilter').value;
-    var url = '/api/listings' + (category ? '?category=' + encodeURIComponent(category) : '');
+    var list = document.getElementById('listingList');
+    var url = '/api/listings' + (currentCategory ? '?category=' + encodeURIComponent(currentCategory) : '');
     apiRequest(url).then(function(data){
-      var filterSelect = document.getElementById('categoryFilter');
-      if (!filterSelect.dataset.filled){
-        data.categories.forEach(function(c){
-          var opt = document.createElement('option');
-          opt.value = c; opt.textContent = c;
-          filterSelect.appendChild(opt);
-        });
-        filterSelect.dataset.filled = '1';
-      }
+      buildFilterBar(data.categories);
       if (!data.listings.length){
-        grid.innerHTML = '<div class="empty-hint">目前还没有符合条件的二手商品，欢迎发布第一个！</div>';
+        list.innerHTML = '<div class="empty-hint">目前还没有符合条件的二手棋具信息</div>';
         return;
       }
-      grid.innerHTML = data.listings.map(function(l){
+      list.innerHTML = data.listings.map(function(l){
         var soldBadge = l.status === 'sold' ? '<span class="sold-badge">已售出</span>' : '';
         var photo = l.cover_image
           ? '<img src="' + l.cover_image + '" alt="">'
-          : '<span style="font-size:32px;color:#fff;">棋</span>';
-        return '<div class="listing-card" data-id="' + l.id + '">' +
-          '<div class="photo">' + photo + soldBadge + '</div>' +
-          '<div class="info"><span class="tag">' + escapeHtml(l.category) + '</span>' +
+          : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--pine-500);font-size:28px;">棋</div>';
+        return '<div class="listing-row" data-id="' + l.id + '">' +
+          '<div class="thumb">' + photo + soldBadge + '</div>' +
+          '<div class="body">' +
+          '<div class="meta-line">' + l.created_at.slice(0, 10) +
+          '<span class="sep">|</span>发布人：' + escapeHtml(l.seller_name) +
+          '<span class="sep">|</span>' + escapeHtml(l.category) + '</div>' +
           '<h4>' + escapeHtml(l.title) + '</h4>' +
+          '<div class="desc">' + escapeHtml(l.description) + '</div>' +
           '<div class="price">￥' + escapeHtml(l.price) + '</div>' +
-          '<div class="meta">' + escapeHtml(l.seller_name) + ' · ' + l.created_at.slice(0, 10) + '</div></div>' +
-          '</div>';
+          '</div></div>';
       }).join('');
-      grid.querySelectorAll('.listing-card').forEach(function(card){
-        card.addEventListener('click', function(){ openListingDetail(card.getAttribute('data-id')); });
+      list.querySelectorAll('.listing-row').forEach(function(row){
+        row.addEventListener('click', function(){ openListingDetail(row.getAttribute('data-id')); });
       });
     }).catch(function(){
-      grid.innerHTML = '<div class="empty-hint">载入失败，请稍后重试</div>';
+      list.innerHTML = '<div class="empty-hint">载入失败，请稍后重试</div>';
     });
   }
 
-  document.getElementById('categoryFilter').addEventListener('change', loadListings);
+  function buildFilterBar(categories){
+    var bar = document.getElementById('filterBar');
+    if (bar.dataset.filled) return;
+    categories.forEach(function(c){
+      var btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.setAttribute('data-category', c);
+      btn.textContent = c;
+      bar.appendChild(btn);
+    });
+    bar.dataset.filled = '1';
+    bar.querySelectorAll('.filter-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        bar.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-category');
+        loadListings();
+      });
+    });
+  }
 
   document.getElementById('openListingFormBtn').addEventListener('click', function(){
     document.getElementById('modal-new-listing').classList.add('open');
@@ -224,7 +264,7 @@
       if (currentMember && currentMember.id === l.user_id){
         ownerActions = '<div style="margin:16px 0;display:flex;gap:10px;">' +
           (l.status === 'active' ? '<button class="code-btn" id="markSoldBtn">标记为已售出</button>' : '') +
-          '<button class="code-btn danger" id="removeListingBtn">下架此商品</button></div>';
+          '<button class="code-btn danger" id="removeListingBtn">下架此信息</button></div>';
       }
 
       var commentsHtml = l.comments.length
@@ -236,17 +276,19 @@
 
       var commentFormHtml = currentMember
         ? '<form id="commentForm" style="margin-top:16px;">' +
-          '<textarea name="content" rows="2" placeholder="给卖家留言，例如询问商品细节或约定交易方式" style="width:100%;padding:10px;border:1px solid #c9dbd2;border-radius:4px;margin-bottom:8px;font-family:inherit;"></textarea>' +
+          '<textarea name="content" rows="2" placeholder="给发布人留言，例如询问物品细节或约定交易方式" style="width:100%;padding:10px;border:1px solid #c9dbd2;border-radius:4px;margin-bottom:8px;font-family:inherit;"></textarea>' +
           '<button type="submit" class="code-btn">发送留言</button></form>'
-        : '<p class="empty-hint">登录会员后才能留言联系卖家</p>';
+        : '<p class="empty-hint">登录会员后才能留言联系发布人</p>';
 
       document.getElementById('detailBody').innerHTML =
         gallery +
-        '<div style="margin:16px 0;"><span class="tag">' + escapeHtml(l.category) + '</span>' +
-        (l.status === 'sold' ? ' <span style="color:#a94442;font-size:12px;">（已售出）</span>' : '') + '</div>' +
-        '<div class="price" style="font-size:22px;">￥' + escapeHtml(l.price) + '</div>' +
+        '<div style="font-size:12px;color:var(--text-light);margin:16px 0 8px;">' +
+        l.created_at.slice(0, 10) + ' &nbsp;|&nbsp; 发布人：' + escapeHtml(l.seller_name) +
+        ' &nbsp;|&nbsp; ' + escapeHtml(l.category) +
+        (l.status === 'sold' ? '<span style="color:#a94442;margin-left:8px;">（已售出）</span>' : '') + '</div>' +
+        '<div style="font-size:22px;color:var(--pine-700);font-weight:700;">￥' + escapeHtml(l.price) + '</div>' +
         '<p style="margin:12px 0;white-space:pre-wrap;">' + escapeHtml(l.description) + '</p>' +
-        '<div class="notice">联系方式：' + escapeHtml(l.contact_info) + '（卖家：' + escapeHtml(l.seller_name) + '）</div>' +
+        '<div class="notice">联系方式：' + escapeHtml(l.contact_info) + '（发布人：' + escapeHtml(l.seller_name) + '）</div>' +
         ownerActions +
         '<h5 style="margin-top:20px;">留言（' + l.comments.length + '）</h5>' +
         commentsHtml + commentFormHtml;
@@ -272,7 +314,7 @@
       var removeBtn = document.getElementById('removeListingBtn');
       if (removeBtn){
         removeBtn.addEventListener('click', function(){
-          if (!confirm('确定要下架这个商品吗？')) return;
+          if (!confirm('确定要下架这条信息吗？')) return;
           apiRequest('/api/listings/' + id, { method: 'DELETE' }).then(function(){
             document.getElementById('modal-listing-detail').classList.remove('open');
             loadListings();

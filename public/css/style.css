@@ -84,6 +84,48 @@ section{ padding:60px 20px; }
 .equip-card h5{ font-size:16px; margin-bottom:8px; color:var(--pine-800); }
 .equip-card p{ font-size:13px; color:var(--text-light); }
 
+/* ---------- 二手棋具交易：左右分栏布局 ---------- */
+.page-banner{
+  background:
+    linear-gradient(135deg, rgba(13,43,34,.9), rgba(26,77,62,.84)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 2px, transparent 2px 40px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 2px, transparent 2px 40px);
+  color:#fff; padding:48px 20px;
+}
+.page-banner .inner{ max-width:1180px; margin:0 auto; }
+.page-banner .en{ font-size:12px; color:var(--pine-400); letter-spacing:4px; text-transform:uppercase; margin-bottom:8px; }
+.page-banner h2{ font-size:28px; letter-spacing:2px; margin-bottom:12px; }
+.page-banner p{ font-size:14px; color:#dcece5; max-width:720px; }
+
+.market-layout{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1fr 300px; gap:32px; align-items:start; }
+
+.filter-bar{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; align-items:center; }
+.filter-btn{ padding:8px 20px; border:1px solid #c9dbd2; background:#fff; border-radius:20px; font-size:13px; color:var(--text-dark); cursor:pointer; font-family:inherit; transition:.2s; }
+.filter-btn:hover{ border-color:var(--pine-500); color:var(--pine-700); }
+.filter-btn.active{ background:var(--pine-700); color:#fff; border-color:var(--pine-700); }
+.filter-bar .spacer{ flex:1; }
+
+.listing-row{ display:flex; gap:18px; background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:18px; margin-bottom:16px; cursor:pointer; transition:.2s; }
+.listing-row:hover{ box-shadow:0 8px 20px rgba(18,59,48,.12); border-color:var(--pine-500); transform:translateY(-2px); }
+.listing-row .thumb{ width:160px; height:120px; flex-shrink:0; border-radius:6px; overflow:hidden; background:var(--pine-100); position:relative; }
+.listing-row .thumb img{ width:100%; height:100%; object-fit:cover; }
+.listing-row .thumb .sold-badge{ position:absolute; top:6px; right:6px; background:#a94442; color:#fff; font-size:11px; padding:2px 8px; border-radius:10px; }
+.listing-row .body{ flex:1; min-width:0; }
+.listing-row .meta-line{ font-size:12px; color:var(--text-light); margin-bottom:8px; }
+.listing-row .meta-line .sep{ margin:0 8px; color:#c9dbd2; }
+.listing-row h4{ font-size:16px; color:var(--text-dark); margin-bottom:8px; }
+.listing-row .desc{ font-size:13px; color:var(--text-light); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.listing-row .price{ color:var(--pine-700); font-weight:700; font-size:16px; margin-top:8px; }
+
+.market-side{ display:flex; flex-direction:column; gap:18px; }
+.side-card{ background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:22px; }
+.side-card h4{ font-size:15px; color:var(--pine-800); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #e1ece7; }
+.side-card p{ font-size:13px; color:var(--text-light); line-height:1.8; }
+.side-card.highlight{ background:var(--pine-800); border-color:var(--pine-800); }
+.side-card.highlight h4{ color:#fff; border-bottom-color:rgba(255,255,255,.15); }
+.side-card.highlight p{ color:#cfe3da; margin-bottom:16px; }
+.side-card.highlight .btn{ display:block; text-align:center; padding:10px; font-size:14px; }
+
 .listing-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
 .listing-card{ background:#fff; border:1px solid #e1ece7; border-radius:6px; overflow:hidden; cursor:pointer; transition:.2s; }
 .listing-card:hover{ transform:translateY(-4px); box-shadow:0 10px 24px rgba(18,59,48,.15); border-color:var(--pine-500); }
@@ -173,6 +215,9 @@ footer a:hover{ color:var(--gold); }
   .knowledge-grid{ grid-template-columns:repeat(2,1fr); }
   .equip-grid{ grid-template-columns:repeat(2,1fr); }
   .listing-grid{ grid-template-columns:repeat(2,1fr); }
+  .market-layout{ grid-template-columns:1fr; }
+  .listing-row{ flex-direction:column; }
+  .listing-row .thumb{ width:100%; height:180px; }
   .membership-grid{ grid-template-columns:1fr; }
   .footer-inner{ grid-template-columns:1fr; gap:28px; }
   .form-row{ flex-direction:column; gap:0; }

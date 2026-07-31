@@ -5,7 +5,7 @@ const { uploadListingImages } = require('../middleware/upload');
 
 const router = express.Router();
 
-const CATEGORIES = ['棋盘', '棋子', '棋钟', '棋盒', '其他'];
+const CATEGORIES = ['棋盘', '棋罐', '棋子', '计时器', '其他'];
 
 function attachImages(listing) {
   listing.images = db.prepare(
@@ -19,11 +19,11 @@ router.get('/', function (req, res) {
   var rows;
   if (category && CATEGORIES.indexOf(category) !== -1) {
     rows = db.prepare(
-      "SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.status != 'removed' AND l.category = ? ORDER BY l.id DESC"
+      "SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.status != 'removed' AND l.category = ? ORDER BY l.created_at DESC, l.id DESC"
     ).all(category);
   } else {
     rows = db.prepare(
-      "SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.status != 'removed' ORDER BY l.id DESC"
+      "SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.status != 'removed' ORDER BY l.created_at DESC, l.id DESC"
     ).all();
   }
   rows.forEach(function (row) {
