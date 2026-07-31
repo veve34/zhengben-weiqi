@@ -1,8 +1,9 @@
-// 示范数据脚本：建立若干已审核会员与二手棋具信息，用于本地预览与备案材料截图。
-// 正式上线前请勿在生产数据库执行，或执行后手动清除这些示范数据。
+// 示范数据脚本：建立若干已审核会员与二手棋具信息，作为板块的初始内容。
 //
-//   node seed-demo.js
+//   npm run seed:demo
 //
+// 脚本会在 listings 表非空时自动跳过，重复执行不会产生重复数据。
+// 联系方式一律使用会员自订的微信号或做过遮蔽的手机号，避免公开展示可能指向真实第三方的号码。
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -34,128 +35,129 @@ const MEMBERS = [
   { name: '郑晓峰', phone: '15168273904', idPrefix: '33018219900817225', level: '业余段位', city: '杭州市临平区' }
 ];
 
-// created_at 采用固定日期，避免每次执行产生不同结果
+// created_at 采用固定日期，避免每次执行结果不同
 const LISTINGS = [
   {
     member: '王建国',
-    title: '日本榧木棋盘 三寸卓上盘 转让',
+    title: '新榧木棋墩 足付盘 约三寸厚',
     category: '棋盘',
-    price: '3200',
-    description: '前年从棋具店购入的日本榧木卓上盘，厚度约三寸，木纹细密、色泽温润。平时都放在书房对弈用，收藏为主，实际使用大概三四十盘棋。盘面无裂无变形，边角有一处很轻微的磕碰痕迹（照片里看不太出来，当面可以仔细看）。因为最近要搬去外地，实在带不走，希望转给真正喜欢的棋友。可以到家里看盘。',
-    contact: '微信 wjg_weiqi1969（加时请说明是围棋盘）',
-    images: ['board-a.jpg', 'board-c.jpg'],
-    created_at: '2026-07-28 20:14:03',
+    price: '4200',
+    description: '新榧（云杉）材质的足付棋墩，连脚一起大概到小腿一半的高度，盘面三寸左右。前几年托朋友从日本带回来的，一直放在书房。木色偏黄，侧面有几处淡淡的水渍色斑（照片里能看到），是早年放在窗边受潮留下的，不影响使用也没有开裂。盘面格线完整清楚，落子声音很扎实。脚是原配的。因为家里要重新装修，实在腾不出地方。只出给自己下棋用的棋友，不太想卖给转手的。可以约在家里看盘。',
+    contact: '微信 wjg_kaya1969（加时请说明是看棋墩）',
+    images: ['kadun-kaya.jpg'],
+    created_at: '2026-07-29 21:06:18',
     status: 'active'
   },
   {
-    member: '陈雅琴',
-    title: '云子一副 黑白共361颗 齐全',
-    category: '棋子',
+    member: '吴海涛',
+    title: '棋社清出计时器三台 一起打包',
+    category: '计时器',
     price: '260',
-    description: '云南产云子，黑子照光呈墨绿色，很有味道。数量数过是齐的，黑181白180，没有缺子。孩子学棋时买的，后来他改学国际象棋了，放着也是浪费。棋子有正常使用的细微痕迹，没有崩边缺角。原装塑料盒还在，一起给。',
-    contact: '电话 15857206348（工作日晚上七点后方便）',
-    images: ['stones-a.jpg', 'stones-b.jpg'],
-    created_at: '2026-07-26 13:47:52',
+    description: '棋社去年换了新一批计时器，旧的三台一直收在柜子里。一台是黑色电子的，读秒、包干模式都正常，屏幕清楚；一台是老式红色翻盖的，按键有年头了但走时准；还有一台深蓝红键的 PS-1688，功能也没问题。三台都能用，外壳难免有磕碰划痕，介意的话不建议入。三台一起出不单卖，这个价格基本就是清库存了。教棋的老师或者刚开棋室的可以考虑。',
+    contact: '微信 wht_qishe（工作日白天在棋社，可当面试机）',
+    images: ['clock-digital.jpg', 'clock-vintage.jpg', 'clock-ps1688.jpg'],
+    created_at: '2026-07-27 10:33:52',
     status: 'active'
   },
   {
     member: '李思远',
-    title: '桑木棋罐一对 手工车制',
+    title: '桑木棋罐一对 带盖 品相好',
     category: '棋罐',
-    price: '480',
-    description: '一对桑木棋罐，带盖，罐身车工规整，木纹很漂亮。买的时候是配一副蛤碁石的，后来棋子送人了，罐子留着一直没用。直径约12公分，装361颗普通厚度的棋子完全够。罐口有一点点使用的光泽，没有裂缝。两个罐子木纹不完全一样，本来就是这样，不是配错。',
-    contact: '微信 lsy0724 / 电话 13906543271',
-    images: ['jar-a.jpg', 'jar-b.jpg', 'jar-c.jpg'],
-    created_at: '2026-07-24 09:22:31',
-    status: 'active'
-  },
-  {
-    member: '张伟民',
-    title: '围棋专用计时器 读秒功能正常',
-    category: '计时器',
-    price: '95',
-    description: '比赛用的电子计时器，双面显示，包干、读秒、加秒几种模式都能用，按键手感还行。之前在棋社帮忙记时用过一段时间，外壳有几道浅划痕，功能完全没问题。电池是新换的。棋社现在换新设备了，这台放着占地方。',
-    contact: '电话 13705719826',
-    images: ['clock-a.jpg', 'clock-b.jpg'],
-    created_at: '2026-07-21 16:05:18',
-    status: 'active'
-  },
-  {
-    member: '刘志强',
-    title: '入门整套 棋盘+棋罐+棋子 一次带走',
-    category: '其他',
-    price: '350',
-    description: '去年报班学棋买的入门套装，竹制棋盘加一对木罐和一副玻璃棋子。上了几个月课，后来工作忙就停了，东西一直收在柜子里。棋盘正常使用痕迹，棋子数量完整。适合刚入门或者给小朋友用，不用另外一件件配。希望一次带走，不单卖。',
-    contact: '微信 lzq_1988（备注围棋套装）',
-    images: ['set-a.jpg', 'board-b.jpg'],
-    created_at: '2026-07-18 21:33:47',
-    status: 'active'
-  },
-  {
-    member: '周瑾',
-    title: '竹制折叠棋盘 便携 适合外出对弈',
-    category: '棋盘',
-    price: '120',
-    description: '竹制的对折棋盘，合起来不占地方，出门带去公园或者茶室下棋很方便。中间折痕处平整，摊开后不会翘。用了大概半年，表面有些许使用痕迹但不影响。因为家里已经买了卓上盘，这个就闲置了。',
-    contact: '微信 zhoujin_go',
-    images: ['board-b.jpg'],
-    created_at: '2026-07-15 11:58:22',
-    status: 'sold'
-  },
-  {
-    member: '吴海涛',
-    title: '蛤碁石 雪印 32号 白子单副',
-    category: '棋子',
-    price: '2800',
-    description: '日向产蛤碁石，雪印，32号厚度，只有白子180颗，黑子（那智黑）已经另外出掉了，所以单独出白子，价格按单副算。石纹清晰均匀，是正经的雪印级别，手感和普通玻璃子完全不是一个层次。有原盒。只推荐懂行的棋友，不太懂的建议先看过实物再决定。可以约在棋社当面验。',
-    contact: '电话 13957186052（白天在棋社，可当面看）',
-    images: ['stones-b.jpg', 'stones-a.jpg'],
-    created_at: '2026-07-12 19:41:09',
-    status: 'active'
-  },
-  {
-    member: '郑晓峰',
-    title: '单个棋罐 装黑子那只 配对用',
-    category: '棋罐',
-    price: '150',
-    description: '原本一对，装白子那只不小心磕坏了盖子，剩下这只完好。木质，带盖，罐身有几圈自然木纹。如果你手上刚好也缺一只、木色能凑得上的话可以考虑，我拍了几个角度的照片。单只出，价格好说。',
-    contact: '微信 zxf_0817',
-    images: ['jar-c.jpg', 'jar-b.jpg'],
-    created_at: '2026-07-09 14:26:55',
-    status: 'active'
-  },
-  {
-    member: '王建国',
-    title: '棋钟 老款机械式 走时准',
-    category: '计时器',
-    price: '180',
-    description: '老式机械棋钟，上弦的那种，两个表盘。现在基本都用电子的了，但这种老东西有它的味道，走时还是准的。外壳漆面有年份感的磨损，指针和旗子都正常。适合喜欢老物件的棋友，当摆件也好看。',
-    contact: '微信 wjg_weiqi1969',
-    images: ['clock-b.jpg'],
-    created_at: '2026-07-05 10:12:38',
+    price: '520',
+    description: '一对桑木棋罐，带原配盖子，罐身车工规整，木纹一圈圈很清楚，表面是自然的油润光泽，不是刷漆的那种亮。直径大概 11.5 公分，装 361 颗普通厚度的棋子还有余。原本配一副蛤碁石的，后来棋子出给别人了，罐子一直空着放柜子里。两只木纹深浅略有差别，本来就是一对里的自然差异。罐口和盖沿都完好，没有磕缺。',
+    contact: '微信 lsy_go0724 / 手机 139****3271（可先站内留言）',
+    images: ['jars-pair.jpg'],
+    created_at: '2026-07-25 19:47:31',
     status: 'active'
   },
   {
     member: '陈雅琴',
-    title: '新榧木棋盘 一寸五 平时练棋用',
-    category: '棋盘',
-    price: '890',
-    description: '新榧（云杉）材质的卓上盘，一寸五厚度，比三寸的轻很多，平时摆桌上练手很合适。买了一年多，盘面格线清楚，没有变形。因为后来换了厚盘，这块就多出来了。适合日常摆着随手复盘用，不太建议当收藏。',
-    contact: '电话 15857206348 / 微信同号',
-    images: ['board-c.jpg', 'board-a.jpg'],
-    created_at: '2026-06-30 22:07:14',
+    title: '蛤碁石一副 附一块薄棋盘',
+    category: '棋子',
+    price: '1900',
+    description: '蛤碁石一副，原装纸盒还在（照片里浅绿色那个盒子）。石子厚度中等，日常下棋用手感很好，不是那种薄薄的机制子。数量点过是齐的。另外附一块薄的木质棋盘，一公分左右厚，本来是配着这副子用的，一起给不另外算钱。棋盘正反面都是十九路，边角有很轻的磨损。孩子学棋那两年买的，现在他升学没时间下了，放着可惜。',
+    contact: '微信 chenyq_1992（备注蛤碁石）',
+    images: ['hamaguri-set.jpg'],
+    created_at: '2026-07-23 14:12:05',
     status: 'active'
+  },
+  {
+    member: '郑晓峰',
+    title: '老棋墩配一对老棋罐 整套出',
+    category: '其他',
+    price: '3600',
+    description: '老件，家里长辈留下来的，具体年份说不准，木色已经沉成深褐色了。棋墩是足付的，侧面能明显看到早年使用的划痕和磕碰，我没有做过任何打磨修复，就是原来的样子。配的一对棋罐也是老的，木纹很漂亮，盖子是原配。罐里的黑白子也一起给，白子有几颗有细纹。整套一起出，不拆开卖。喜欢老物件的应该懂这个状态，追求品相完美的就不用来了。',
+    contact: '微信 zxf_oldgo（可视频看细节）',
+    images: ['kadun-antique.jpg'],
+    created_at: '2026-07-21 20:58:44',
+    status: 'active'
+  },
+  {
+    member: '刘志强',
+    title: '竹制棋盘整套 盘+两个棋罐+棋子',
+    category: '其他',
+    price: '460',
+    description: '竹制棋盘一整套，含棋盘、两个带盖竹棋罐和一副棋子。去年报围棋班的时候在网上买的，用了大概三四个月，后来工作太忙就停课了，东西收在阳台柜子里。棋盘表面平整没变形，竹纹清楚；棋罐盖子开合正常；棋子数量完整，是常见的玻璃子，有正常使用的细微痕迹。适合刚入门或者给小朋友练手，不用一件件另外配。希望一次带走。',
+    contact: '微信 lzq1988_go（备注围棋套装）',
+    images: ['set-bamboo.jpg'],
+    created_at: '2026-07-19 22:24:37',
+    status: 'active'
+  },
+  {
+    member: '周瑾',
+    title: '家用整套 棋盘配两个木棋罐',
+    category: '其他',
+    price: '680',
+    description: '自己家里在用的一套，拍照那天刚好在下棋就顺手拍了（垫在下面的席子不含在内）。棋盘是木质薄盘，摊在桌上就能下；两个棋罐是浅色木的，带盖，盖子拿下来搁旁边的样子照片里看得到。棋子黑白都齐，白子是普通的，黑子偏墨绿。整套用了一年多，日常擦拭保养，没有明显磕伤。现在换了厚一点的卓上盘，这套就多出来了。',
+    contact: '微信 zhoujin_weiqi',
+    images: ['set-home.jpg'],
+    created_at: '2026-07-16 11:39:16',
+    status: 'active'
+  },
+  {
+    member: '张伟民',
+    title: '带抽屉收纳棋盘 棋子直接收在盘里',
+    category: '棋盘',
+    price: '240',
+    description: '棋盘下面左右各带一个抽屉，黑白子分开收在里面，下完直接推回去就行，不用另外找罐子装，桌面上很省事。深棕色的，材质是密度板贴皮，不是实木，这点说清楚免得误会。用了一年多，抽屉滑轨顺畅，盘面格线清楚，边角有一点使用痕迹。棋子是配套的塑料子，一起给。适合家里空间小或者带小孩下棋收拾方便的。',
+    contact: '微信 zwm_1976 / 手机 137****9826',
+    images: ['board-drawer.jpg'],
+    created_at: '2026-07-13 09:15:29',
+    status: 'active'
+  },
+  {
+    member: '王建国',
+    title: '折叠脚矮棋桌 附两个棋子托盘',
+    category: '棋盘',
+    price: '390',
+    description: '带折叠脚的矮棋桌，脚可以收起来平放，摊开后高度差不多是坐地上或者坐矮凳下棋的高度。桌面盘面是十九路，右上角边缘有一圈挡边，棋子不容易滚下去。另外配两个方形木托盘装黑白子，照片里放在桌面上那两个。整体是漆过的木头，颜色偏红棕。买来在客厅地毯上下棋用的，后来搬家客厅小了摆不开。脚的活动关节都正常，没有松。',
+    contact: '微信 wjg_kaya1969',
+    images: ['board-legs.jpg'],
+    created_at: '2026-07-08 17:52:41',
+    status: 'active'
+  },
+  {
+    member: '周瑾',
+    title: '折叠磁性棋盘 便携 出门下棋用',
+    category: '棋盘',
+    price: '130',
+    description: '磁性折叠棋盘，对折起来像个盒子，棋子磁吸不会乱跑，坐高铁或者去公园茶室下棋都很方便，风吹也不怕。摊开是十九路，合起来棋子就收在盘子里。用了半年多，折痕处平整，摊开后盘面不翘。棋子磁力都还在，数量完整。因为后来买了实木盘在家用，这个就闲置了。照片拍了摊开和收起来两个状态。',
+    contact: '微信 zhoujin_weiqi',
+    images: ['board-fold.jpg', 'set-fold.jpg'],
+    created_at: '2026-06-30 15:28:09',
+    status: 'sold'
   }
 ];
 
 const COMMENTS = [
-  { listingTitle: '云子一副 黑白共361颗 齐全', author: '刘志强', content: '请问这个还在吗？孩子刚开始学，想给他配一副。', created_at: '2026-07-27 09:15:22' },
-  { listingTitle: '云子一副 黑白共361颗 齐全', author: '周瑾', content: '云子墨绿色照片上看着挺正的，是老云子还是新的？', created_at: '2026-07-28 20:48:37' },
-  { listingTitle: '桑木棋罐一对 手工车制', author: '郑晓峰', content: '罐口内径大概多少？我的棋子偏厚，怕装不下。', created_at: '2026-07-25 15:30:04' },
-  { listingTitle: '入门整套 棋盘+棋罐+棋子 一次带走', author: '陈雅琴', content: '滨江的话我周末可以过去看，方便的时间私聊您。', created_at: '2026-07-19 10:22:41' },
-  { listingTitle: '蛤碁石 雪印 32号 白子单副', author: '王建国', content: '雪印32号这个价格算实在了。请问那智黑是出给谁了，有没有可能一起收回来配套？', created_at: '2026-07-14 18:53:16' },
-  { listingTitle: '围棋专用计时器 读秒功能正常', author: '吴海涛', content: '棋社也在找几台备用的，能否多要两台？如果还有请联系我。', created_at: '2026-07-22 08:37:29' },
-  { listingTitle: '日本榧木棋盘 三寸卓上盘 转让', author: '张伟民', content: '榧木三寸这个价位不多见，请问木纹是柾目还是木口？', created_at: '2026-07-29 21:04:52' }
+  { listingTitle: '新榧木棋墩 足付盘 约三寸厚', author: '张伟民', content: '请问侧面那几处水渍摸起来有凹凸吗？还是只是颜色的差别？', created_at: '2026-07-30 08:41:22' },
+  { listingTitle: '新榧木棋墩 足付盘 约三寸厚', author: '吴海涛', content: '新榧足付三寸这个价位算合理。方便的话周末想过去看看实物。', created_at: '2026-07-30 19:07:53' },
+  { listingTitle: '棋社清出计时器三台 一起打包', author: '刘志强', content: '三台一起 260 挺划算，我朋友刚开了个小棋室，帮他问下还在吗？', created_at: '2026-07-28 13:22:40' },
+  { listingTitle: '桑木棋罐一对 带盖 品相好', author: '郑晓峰', content: '罐口内径量过大概多少？我手上的子偏厚，怕装不下。', created_at: '2026-07-26 16:50:14' },
+  { listingTitle: '蛤碁石一副 附一块薄棋盘', author: '王建国', content: '这个盒子看着是老包装。石子厚度方便量一下大概几号吗？', created_at: '2026-07-24 21:33:07' },
+  { listingTitle: '老棋墩配一对老棋罐 整套出', author: '李思远', content: '老件这个状态很有味道，不修反而好。白子有细纹是正常的老化，能接受。', created_at: '2026-07-22 10:18:35' },
+  { listingTitle: '竹制棋盘整套 盘+两个棋罐+棋子', author: '陈雅琴', content: '滨江的话我周末方便过去看，时间私聊您。', created_at: '2026-07-20 09:44:58' },
+  { listingTitle: '带抽屉收纳棋盘 棋子直接收在盘里', author: '周瑾', content: '带抽屉的确实省事，家里小孩下完棋从来不收。请问抽屉深度装得下厚一点的云子吗？', created_at: '2026-07-14 20:05:47' }
 ];
 
 function run() {
@@ -202,10 +204,12 @@ function run() {
     listingIds[l.title] = result.lastInsertRowid;
 
     l.images.forEach(function (src, index) {
-      var ext = path.extname(src);
+      var srcPath = path.join(DEMO_IMAGE_DIR, src);
+      if (!fs.existsSync(srcPath)) throw new Error('找不到示范图片：' + src);
       var fileName = 'demo-' + result.lastInsertRowid + '-' + index + '-' +
-        crypto.createHash('md5').update(src + result.lastInsertRowid).digest('hex').slice(0, 8) + ext;
-      fs.copyFileSync(path.join(DEMO_IMAGE_DIR, src), path.join(UPLOAD_DIR, fileName));
+        crypto.createHash('md5').update(src + result.lastInsertRowid).digest('hex').slice(0, 8) +
+        path.extname(src);
+      fs.copyFileSync(srcPath, path.join(UPLOAD_DIR, fileName));
       insertImage.run(result.lastInsertRowid, fileName, index);
     });
   });
@@ -218,7 +222,10 @@ function run() {
   COMMENTS.forEach(function (c) {
     var listingId = listingIds[c.listingTitle];
     var userId = memberIds[c.author];
-    if (!listingId || !userId) return;
+    if (!listingId || !userId) {
+      console.warn('跳过留言（找不到对应信息或会员）：' + c.listingTitle);
+      return;
+    }
     insertComment.run(listingId, userId, c.content, c.created_at);
     commentCount++;
   });
