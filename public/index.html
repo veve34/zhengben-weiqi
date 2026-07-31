@@ -22,7 +22,6 @@
         <ul>
           <li><a href="index.html" class="active">首页</a></li>
           <li><a href="knowledge.html">围棋知识</a></li>
-          <li><a href="equipment.html">棋具介绍</a></li>
           <li><a href="marketplace.html">二手交易</a></li>
           <li><a href="membership.html">会员方案</a></li>
           <li><a href="register.html" data-guest-only>会员注册</a></li>
@@ -38,13 +37,41 @@
       <div>
         <h2>传承黑白之道，弘扬千年棋艺</h2>
         <p>正本围棋致力于围棋文化的公益普及与推广，系统整理围棋基础知识、规则礼仪与棋具文化，帮助更多爱好者走进围棋的世界。</p>
-        <a class="btn" href="knowledge.html">浏览围棋知识</a>
+        <a class="btn" href="marketplace.html">浏览棋具租赁信息</a>
         <a class="btn outline" href="register.html" data-guest-only>立即注册会员</a>
         <a class="btn outline" href="member-center.html" data-member-only style="display:none">进入会员中心</a>
       </div>
       <div class="goban" id="goban"></div>
     </div>
   </div>
+
+  <section id="equipment" class="equip-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Go Equipment</div>
+        <h3>棋具介绍</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="equip-grid">
+        <div class="equip-card">
+          <img src="images/equipment/goban.jpg" alt="棋盘" style="border-radius:6px;margin-bottom:14px;aspect-ratio:4/3;object-fit:cover;">
+          <h5>棋盘</h5><p>标准十九路棋盘，常见材质有木质、竹制等，讲究纹理与手感。</p>
+        </div>
+        <div class="equip-card">
+          <img src="images/equipment/stones.jpg" alt="黑白棋子" style="border-radius:6px;margin-bottom:14px;aspect-ratio:4/3;object-fit:cover;">
+          <h5>黑白棋子</h5><p>棋子材质多为云子、玛瑙、贝壳等，圆润饱满，触感温润。</p>
+        </div>
+        <div class="equip-card">
+          <img src="images/equipment/box.jpg" alt="棋盒（棋笥）" style="border-radius:6px;margin-bottom:14px;aspect-ratio:4/3;object-fit:cover;">
+          <h5>棋盒（棋笥）</h5><p>用于盛放棋子，常见木盒与藤编款式，兼具收纳与观赏价值。</p>
+        </div>
+        <div class="equip-card">
+          <img src="images/equipment/clock.jpg" alt="计时器" style="border-radius:6px;margin-bottom:14px;aspect-ratio:4/3;object-fit:cover;">
+          <h5>计时器</h5><p>正式比赛常用围棋专用计时器，用于读秒与限时对弈。</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer>
     <p>网站名称：正本围棋 &nbsp;|&nbsp; 网站域名：jingjianyinghe.com</p>
@@ -60,16 +87,9 @@
   (function(){
     var goban = document.getElementById('goban');
     var total = 81;
-    var stoneCells = [20, 22, 30, 32, 41, 50, 58, 60];
-    var blackCells = [20, 32, 41, 58];
     for (var i = 0; i < total; i++){
       var cell = document.createElement('div');
       cell.className = 'cell';
-      if (stoneCells.indexOf(i) !== -1){
-        var stone = document.createElement('div');
-        stone.className = 'stone ' + (blackCells.indexOf(i) !== -1 ? 'black' : 'white');
-        cell.appendChild(stone);
-      }
       goban.appendChild(cell);
     }
   })();

@@ -35,9 +35,8 @@ npm start
 
 前台是多页式站点，每个功能各自一个 HTML 文件，导览栏直接链接对应页面（不是锚点跳转）：
 
-- `index.html` — 首页
+- `index.html` — 首页（含棋具介绍区块，未单独设页）
 - `knowledge.html` — 围棋知识
-- `equipment.html` — 棋具介绍
 - `marketplace.html` — 二手棋具交易
 - `membership.html` — 会员方案
 - `register.html` — 会员注册
@@ -46,6 +45,8 @@ npm start
 - `contact.html` — 关于我们
 
 各页面的 header/footer 各自维护一份静态标记（没有用模板引擎做共享），若要调整导览项或页脚内容，需要在每个页面文件里同步修改。共用的 CSS 在 `css/style.css`，共用的会话检查/弹窗逻辑在 `js/common.js`，两者改一次即可对所有页面生效。
+
+首页棋具介绍区块的图片目前是占位图（`public/images/equipment/goban.jpg`、`stones.jpg`、`box.jpg`、`clock.jpg`），拿到实际商品照片后直接用相同档名覆盖即可，不需要改 HTML。
 
 ## 二手棋具交易
 
