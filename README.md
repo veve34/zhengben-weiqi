@@ -27,8 +27,25 @@ npm start
 - `services/idCardValidator.js` — 身份证号格式与校验码验证（GB 11643 公开算法，纯本地计算，不依赖任何外部服务）
 - `services/idCardCrypto.js` — 身份证号加密存储（Node.js 内建 crypto 模块，AES-256-GCM）
 - `middleware/upload.js` — 图片上传处理（multer，存储于本机 `public/uploads/listings/`，不依赖任何云存储服务）
-- `public/index.html` — 会员网站前台
+- `public/*.html` — 会员网站前台，多页式结构（见下）
 - `public/admin.html` — 内容管理后台
+- `public/css/style.css`、`public/js/common.js` — 前台各页共用的样式与脚本（会话检查、导览、弹窗逻辑）
+
+## 前台页面结构
+
+前台是多页式站点，每个功能各自一个 HTML 文件，导览栏直接链接对应页面（不是锚点跳转）：
+
+- `index.html` — 首页
+- `knowledge.html` — 围棋知识
+- `equipment.html` — 棋具介绍
+- `marketplace.html` — 二手棋具交易
+- `membership.html` — 会员方案
+- `register.html` — 会员注册
+- `login.html` — 会员登录
+- `member-center.html` — 会员中心
+- `contact.html` — 关于我们
+
+各页面的 header/footer 各自维护一份静态标记（没有用模板引擎做共享），若要调整导览项或页脚内容，需要在每个页面文件里同步修改。共用的 CSS 在 `css/style.css`，共用的会话检查/弹窗逻辑在 `js/common.js`，两者改一次即可对所有页面生效。
 
 ## 二手棋具交易
 

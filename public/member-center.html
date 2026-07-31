@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会员中心 - 正本围棋</title>
+<meta name="description" content="查看您的正本围棋会员资料。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="mark"></div>
+        <div class="text">
+          <h1>正本围棋</h1>
+          <span>ZHENGBEN WEIQI · 围棋文化推广平台</span>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="knowledge.html">围棋知识</a></li>
+          <li><a href="equipment.html">棋具介绍</a></li>
+          <li><a href="marketplace.html">二手交易</a></li>
+          <li><a href="membership.html">会员方案</a></li>
+          <li><a href="register.html" data-guest-only>会员注册</a></li>
+          <li><a href="member-center.html" class="active" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="contact.html">关于我们</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 会员中心 -->
+  <section id="member-center" class="register-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Member Center</div>
+        <h3>会员中心</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="member-card" id="memberCard">
+        <div class="empty-hint">载入中…</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>网站名称：正本围棋 &nbsp;|&nbsp; 网站域名：jingjianyinghe.com</p>
+    <p>主办者名称：杭州精尖硬核棋道信息科技有限公司</p>
+    <p>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">浙ICP备2026043380号</a>
+      &nbsp;|&nbsp; 网站备案号：浙ICP备2026043380号-1
+    </p>
+    <p>© 2026 正本围棋 版权所有</p>
+  </footer>
+
+<script src="js/common.js"></script>
+<script>
+  function renderMemberCard(member){
+    var card = document.getElementById('memberCard');
+    if (!member){
+      card.innerHTML = '<div class="empty-hint">尚未登录，请先<a href="login.html" style="color:var(--pine-600);text-decoration:underline;">前往登录</a></div>';
+      return;
+    }
+    card.innerHTML =
+      '<div class="row"><span>真实姓名</span><span>' + member.real_name + '</span></div>' +
+      '<div class="row"><span>身份证号</span><span>**************' + member.id_card_last4 + '</span></div>' +
+      '<div class="row"><span>手机号码</span><span>' + member.phone + '</span></div>' +
+      '<div class="row"><span>棋力水平</span><span>' + (member.level || '未填写') + '</span></div>' +
+      '<div class="row"><span>会员等级</span><span class="tier-tag">' + (member.member_tier === 'free' ? '基础会员' : member.member_tier) + '</span></div>' +
+      '<div class="row"><span>注册时间</span><span>' + member.created_at + '</span></div>' +
+      '<button class="submit-btn" style="margin-top:20px;" id="logoutBtn">退出登录</button>';
+    document.getElementById('logoutBtn').addEventListener('click', function(){
+      apiRequest('/api/auth/logout', { method:'POST' }).then(function(){
+        window.location.href = 'index.html';
+      });
+    });
+  }
+
+  document.addEventListener('session-ready', function(e){ renderMemberCard(e.detail.member); });
+</script>
+</body>
+</html>

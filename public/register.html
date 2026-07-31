@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会员注册 - 正本围棋</title>
+<meta name="description" content="注册正本围棋会员，需填写真实身份信息，提交后等待管理员审核。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="mark"></div>
+        <div class="text">
+          <h1>正本围棋</h1>
+          <span>ZHENGBEN WEIQI · 围棋文化推广平台</span>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="knowledge.html">围棋知识</a></li>
+          <li><a href="equipment.html">棋具介绍</a></li>
+          <li><a href="marketplace.html">二手交易</a></li>
+          <li><a href="membership.html">会员方案</a></li>
+          <li><a href="register.html" class="active" data-guest-only>会员注册</a></li>
+          <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="contact.html">关于我们</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 会员注册 -->
+  <section id="register" class="register-section">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Member Registration</div>
+        <h3>个人会员注册</h3>
+        <div class="bar"></div>
+      </div>
+
+      <div class="register-wrap">
+        <div class="notice">
+          根据国家网络实名管理相关规定，注册本平台会员需填写真实身份信息，信息仅用于身份核验，我们将依法予以保密。提交后需等待管理员审核，审核通过后方可登录使用。
+        </div>
+
+        <form id="registerForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>真实姓名 <span class="req">*</span></label>
+              <input type="text" name="realName" placeholder="请输入您的真实姓名" required>
+            </div>
+            <div class="form-group">
+              <label>身份证号 <span class="req">*</span></label>
+              <input type="text" name="idCard" placeholder="请输入18位身份证号码" maxlength="18" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>手机号码 <span class="req">*</span></label>
+              <input type="tel" name="phone" placeholder="请输入常用手机号" maxlength="11" required>
+            </div>
+            <div class="form-group">
+              <label>登录密码 <span class="req">*</span></label>
+              <input type="password" name="password" placeholder="至少6位" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>棋力水平</label>
+              <select name="level">
+                <option value="">请选择（选填）</option>
+                <option>零基础</option>
+                <option>入门级位</option>
+                <option>业余段位</option>
+                <option>职业棋手</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>常用邮箱</label>
+              <input type="email" name="email" placeholder="用于接收通知（选填）">
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>常住地址</label>
+            <input type="text" name="address" placeholder="请输入常住地址（选填）">
+          </div>
+
+          <div class="agree-row">
+            <input type="checkbox" id="agree" required>
+            <label for="agree">我已阅读并同意<a href="#" class="policy-link" data-policy="terms">《正本围棋用户注册协议》</a>及<a href="#" class="policy-link" data-policy="privacy">《个人信息保护声明》</a>，承诺所填信息真实有效。</label>
+          </div>
+
+          <button type="submit" class="submit-btn">提交注册</button>
+          <div class="form-msg ok" id="registerMsg"></div>
+        </form>
+        <div class="switch-link">已有帐号？<a href="login.html">直接登录</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 用户注册协议 弹窗 -->
+  <div class="modal-overlay" id="modal-terms">
+    <div class="modal-box">
+      <div class="modal-header"><h4>正本围棋用户注册协议</h4><button class="modal-close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <h5>一、协议的接受</h5>
+        <p>欢迎注册成为正本围棋会员。您在勾选同意本协议并完成注册前，应仔细阅读本协议全部内容。您一旦完成注册，即视为已充分理解并同意接受本协议的全部约束。</p>
+        <h5>二、账号注册与实名信息</h5>
+        <p>为符合国家网络实名管理相关规定，注册本平台会员须提供真实姓名、身份证号码及本人常用手机号码。您应确保所提交信息真实、准确、完整，如信息发生变更应及时更新。</p>
+        <p>因提供虚假信息导致的一切后果由用户本人承担，正本围棋有权对信息不实的账号采取限制或暂停服务等措施。</p>
+        <h5>三、账号使用规范</h5>
+        <p>用户应妥善保管账号与密码，不得将账号转让、出借他人使用。用户在平台内的一切行为应遵守国家法律法规及公序良俗，不得利用本平台从事任何违法违规活动。</p>
+        <h5>四、服务内容</h5>
+        <p>正本围棋目前为用户提供围棋知识普及、棋具文化介绍、二手棋具信息发布等基础会员服务，进阶付费服务详情将于正式开放前另行公告。平台有权根据实际运营情况调整、增减服务内容。</p>
+        <h5>五、二手棋具信息发布</h5>
+        <p>正本围棋仅为用户提供二手棋具信息发布与留言联系功能，不参与、不担保任何交易过程，交易由买卖双方自行线下完成并自行承担相应风险与责任。用户发布的商品信息应真实准确，不得发布违禁、侵权或欺诈性内容，正本围棋有权对违规内容予以下架处理。</p>
+        <h5>六、协议的变更</h5>
+        <p>正本围棋有权在必要时修订本协议条款，修订后的协议将在平台内公布，若您继续使用本平台服务，即视为接受修订后的协议。</p>
+      </div>
+      <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
+    </div>
+  </div>
+
+  <!-- 个人信息保护声明 弹窗 -->
+  <div class="modal-overlay" id="modal-privacy">
+    <div class="modal-box">
+      <div class="modal-header"><h4>正本围棋个人信息保护声明</h4><button class="modal-close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <h5>一、信息收集范围</h5>
+        <p>为完成会员实名注册及提供相应服务，我们将收集您的真实姓名、身份证号码、手机号码、登录密码等必要信息，以及您自愿填写的邮箱、常住地址、棋力水平等信息。身份证号码属于敏感个人信息，我们会加密存储，仅用于身份核验，不会用于本声明约定之外的用途。</p>
+        <h5>二、信息使用目的</h5>
+        <p>您提供的信息仅用于会员身份核验、账号安全保护及必要的服务通知，不会用于本声明约定之外的用途。</p>
+        <h5>三、信息存储与保密</h5>
+        <p>我们将采取符合行业标准的安全技术措施保护您的个人信息（包括密码加密存储、传输加密等），防止信息被未经授权的访问、披露、篡改或毁损。除法律法规要求或经您本人同意外，我们不会向第三方提供、公开或出售您的个人信息。</p>
+        <h5>四、二手棋具信息发布</h5>
+        <p>若您选择发布二手棋具信息，您在发布内容中主动填写的真实姓名、联系方式（电话/微信等）、商品照片及描述将对平台所有访问者公开展示，用于方便买家与您联系。请您自行判断愿意公开的信息范围，交易本身由买卖双方自行线下完成，平台不参与、不担保交易过程。</p>
+        <h5>五、您的权利</h5>
+        <p>您有权查询、更正您的个人信息，如需注销账号或删除个人信息，可通过平台留下的联系方式与我们联系，我们将在法律法规允许的范围内予以处理。</p>
+        <h5>六、声明的更新</h5>
+        <p>本声明可能随平台服务的调整及法律法规的变化进行更新，更新后的内容将在本平台公布。</p>
+      </div>
+      <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>网站名称：正本围棋 &nbsp;|&nbsp; 网站域名：jingjianyinghe.com</p>
+    <p>主办者名称：杭州精尖硬核棋道信息科技有限公司</p>
+    <p>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">浙ICP备2026043380号</a>
+      &nbsp;|&nbsp; 网站备案号：浙ICP备2026043380号-1
+    </p>
+    <p>© 2026 正本围棋 版权所有</p>
+  </footer>
+
+<script src="js/common.js"></script>
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = e.target;
+    var msg = document.getElementById('registerMsg');
+    var payload = {
+      realName: form.realName.value.trim(),
+      phone: form.phone.value.trim(),
+      idCard: form.idCard.value.trim(),
+      password: form.password.value,
+      level: form.level.value,
+      email: form.email.value.trim(),
+      address: form.address.value.trim()
+    };
+    apiRequest('/api/auth/register', { method:'POST', body: JSON.stringify(payload) })
+      .then(function(){
+        msg.textContent = '注册申请已提交，请等待管理员审核，审核通过后即可使用手机号与密码登录。';
+        msg.className = 'form-msg ok';
+        msg.style.display = 'block';
+        form.reset();
+      })
+      .catch(function(err){
+        msg.textContent = err.message;
+        msg.className = 'form-msg err';
+        msg.style.display = 'block';
+      });
+  });
+</script>
+</body>
+</html>

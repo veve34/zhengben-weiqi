@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>围棋知识 - 正本围棋</title>
+<meta name="description" content="围棋基础规则、布局定式、段位常识、术语与文化礼仪介绍。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="mark"></div>
+        <div class="text">
+          <h1>正本围棋</h1>
+          <span>ZHENGBEN WEIQI · 围棋文化推广平台</span>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="knowledge.html" class="active">围棋知识</a></li>
+          <li><a href="equipment.html">棋具介绍</a></li>
+          <li><a href="marketplace.html">二手交易</a></li>
+          <li><a href="membership.html">会员方案</a></li>
+          <li><a href="register.html" data-guest-only>会员注册</a></li>
+          <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="contact.html">关于我们</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section id="knowledge">
+    <div class="section-inner">
+      <div class="section-title">
+        <div class="en">Weiqi Knowledge</div>
+        <h3>围棋知识</h3>
+        <div class="bar"></div>
+      </div>
+      <div class="knowledge-grid" id="knowledgeGrid">
+        <div class="empty-hint">正在载入内容…</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>网站名称：正本围棋 &nbsp;|&nbsp; 网站域名：jingjianyinghe.com</p>
+    <p>主办者名称：杭州精尖硬核棋道信息科技有限公司</p>
+    <p>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">浙ICP备2026043380号</a>
+      &nbsp;|&nbsp; 网站备案号：浙ICP备2026043380号-1
+    </p>
+    <p>© 2026 正本围棋 版权所有</p>
+  </footer>
+
+<script src="js/common.js"></script>
+<script>
+  function loadArticles(){
+    var grid = document.getElementById('knowledgeGrid');
+    apiRequest('/api/articles').then(function(data){
+      if (!data.articles || !data.articles.length){
+        grid.innerHTML = '<div class="empty-hint">暂无内容</div>';
+        return;
+      }
+      grid.innerHTML = data.articles.map(function(a){
+        return '<div class="card"><div class="thumb">' + a.title.charAt(0) + '</div><div class="body">' +
+          '<span class="tag">' + a.tag + '</span><h4>' + a.title + '</h4><p>' + a.summary + '</p></div></div>';
+      }).join('');
+    }).catch(function(){
+      grid.innerHTML = '<div class="empty-hint">内容载入失败，请稍后重试</div>';
+    });
+  }
+  loadArticles();
+</script>
+</body>
+</html>
