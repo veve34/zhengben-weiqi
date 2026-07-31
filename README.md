@@ -42,11 +42,12 @@ npm start
 - `register.html` — 会员注册
 - `login.html` — 会员登录
 - `member-center.html` — 会员中心
-- `contact.html` — 关于我们
+
+没有单独的「关于我们」页面——「关于正本围棋」与「联系方式」并入每一页共用的 `<footer>`，因此每页最下面都能看到。
 
 各页面的 header/footer 各自维护一份静态标记（没有用模板引擎做共享），若要调整导览项或页脚内容，需要在每个页面文件里同步修改。共用的 CSS 在 `css/style.css`，共用的会话检查/弹窗逻辑在 `js/common.js`，两者改一次即可对所有页面生效。
 
-首页棋具介绍区块的图片目前是占位图（`public/images/equipment/goban.jpg`、`stones.jpg`、`box.jpg`、`clock.jpg`），拿到实际商品照片后直接用相同档名覆盖即可，不需要改 HTML。
+首页棋具介绍区块的图片在 `public/images/equipment/`（`goban.jpg`、`stones.jpg`、`box.jpg`、`clock.jpg`），已换成实际商品照片。
 
 ## 二手棋具交易
 
