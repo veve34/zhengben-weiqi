@@ -22,10 +22,17 @@ npm start
 - `routes/articles.js` — 围棋知识文章（公开查询 + 后台管理）
 - `routes/admin.js` — 管理员登录
 - `routes/adminMembers.js` — 会员审核（查询/通过/驳回）
+- `routes/listings.js` — 二手棋具信息发布（发布/查询/留言/标记售出/下架）
+- `routes/adminListings.js` — 二手棋具管理（后台强制下架）
 - `services/idCardValidator.js` — 身份证号格式与校验码验证（GB 11643 公开算法，纯本地计算，不依赖任何外部服务）
 - `services/idCardCrypto.js` — 身份证号加密存储（Node.js 内建 crypto 模块，AES-256-GCM）
+- `middleware/upload.js` — 图片上传处理（multer，存储于本机 `public/uploads/listings/`，不依赖任何云存储服务）
 - `public/index.html` — 会员网站前台
 - `public/admin.html` — 内容管理后台
+
+## 二手棋具交易
+
+仅提供信息发布与留言联系功能，**不涉及任何金流/支付**，交易由买卖双方自行线下完成，平台不参与、不担保交易过程。会员发布商品需上传1-5张照片（本机存储，未接入任何云存储），填写标题、分类、使用状况、价格、联系方式，其他会员可留言联系。发布者可将自己的商品标记为已售出或下架，管理员可在后台强制下架违规商品。
 
 ## 关于实名信息
 

@@ -26,6 +26,9 @@
   .status-pending{ background:#fbf3e3; color:#7a5a12; }
   .status-approved{ background:#e5f3ec; color:#123b30; }
   .status-rejected{ background:#fbeaea; color:#9c3a3a; }
+  .status-active{ background:#e5f3ec; color:#123b30; }
+  .status-sold{ background:#fbf3e3; color:#7a5a12; }
+  .status-removed{ background:#fbeaea; color:#9c3a3a; }
   button.approve{ background:var(--pine-600); }
 </style>
 </head>
@@ -52,6 +55,16 @@
       <table>
         <thead><tr><th>姓名</th><th>手机号</th><th>身份证号</th><th>申请时间</th><th>状态</th><th>操作</th></tr></thead>
         <tbody id="memberList"></tbody>
+      </table>
+    </div>
+
+    <h1>正本围棋 · 二手棋具管理</h1>
+
+    <div class="card">
+      <h3 style="margin-top:0;">二手商品列表</h3>
+      <table>
+        <thead><tr><th>标题</th><th>卖家</th><th>联系方式</th><th>价格</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="listingList"></tbody>
       </table>
     </div>
 
@@ -96,6 +109,7 @@
         document.getElementById('panel').classList.remove('hidden');
         loadArticles();
         loadMembers();
+        loadListings();
       })
       .catch(function(err){
         document.getElementById('loginError').textContent = err.message;
@@ -139,6 +153,41 @@
   }
 
   document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
+
+  var LISTING_STATUS_LABEL = { active: '在售', sold: '已售出', removed: '已下架' };
+
+  function loadListings(){
+    apiRequest('/api/admin/listings').then(function(data){
+      var tbody = document.getElementById('listingList');
+      if (!data.listings.length){
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#5c6f68;">暂无二手商品</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.listings.map(function(l){
+        var action = l.status === 'removed'
+          ? ''
+          : '<button class="danger" data-id="' + l.id + '">下架</button>';
+        return '<tr>' +
+          '<td>' + l.title + '</td>' +
+          '<td>' + l.seller_name + '</td>' +
+          '<td>' + l.seller_phone + '</td>' +
+          '<td>￥' + l.price + '</td>' +
+          '<td>' + l.created_at + '</td>' +
+          '<td><span class="status-tag status-' + l.status + '">' + LISTING_STATUS_LABEL[l.status] + '</span></td>' +
+          '<td class="row-actions">' + action + '</td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('button[data-id]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          if (!confirm('确定要下架这个商品吗？')) return;
+          apiRequest('/api/admin/listings/' + btn.getAttribute('data-id') + '/remove', { method:'POST' })
+            .then(function(){ loadListings(); })
+            .catch(function(err){ alert(err.message); });
+        });
+      });
+    });
+  }
 
   function loadArticles(){
     apiRequest('/api/articles').then(function(data){
