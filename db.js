@@ -38,7 +38,7 @@ db.exec(`
     description TEXT NOT NULL DEFAULT '',
     price TEXT NOT NULL DEFAULT '',
     contact_info TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'active',
+    status TEXT NOT NULL DEFAULT 'pending',
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );

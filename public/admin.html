@@ -58,12 +58,20 @@
       </table>
     </div>
 
-    <h1>正本围棋 · 二手棋具管理</h1>
+    <h1>正本围棋 · 二手棋具信息审核</h1>
 
     <div class="card">
-      <h3 style="margin-top:0;">二手商品列表</h3>
+      <h3 style="margin-top:0;">二手棋具信息</h3>
+      <select id="listingStatusFilter">
+        <option value="pending">待审核</option>
+        <option value="active">已通过（在售）</option>
+        <option value="sold">已售出</option>
+        <option value="rejected">未通过</option>
+        <option value="removed">已下架</option>
+        <option value="all">全部</option>
+      </select>
       <table>
-        <thead><tr><th>标题</th><th>卖家</th><th>联系方式</th><th>价格</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+        <thead><tr><th>照片</th><th>标题 / 说明</th><th>发布人</th><th>联系方式</th><th>价格</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
         <tbody id="listingList"></tbody>
       </table>
     </div>
@@ -154,40 +162,72 @@
 
   document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
 
-  var LISTING_STATUS_LABEL = { active: '在售', sold: '已售出', removed: '已下架' };
+  var LISTING_STATUS_LABEL = {
+    pending: '待审核', active: '在售', sold: '已售出', rejected: '未通过', removed: '已下架'
+  };
+  var LISTING_ACTION_CONFIRM = {
+    approve: null,
+    reject: '确定要驳回这条信息吗？驳回后不会对外公开。',
+    remove: '确定要下架这条信息吗？'
+  };
+
+  function escapeHtml(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
   function loadListings(){
-    apiRequest('/api/admin/listings').then(function(data){
+    var status = document.getElementById('listingStatusFilter').value;
+    apiRequest('/api/admin/listings?status=' + status).then(function(data){
       var tbody = document.getElementById('listingList');
       if (!data.listings.length){
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#5c6f68;">暂无二手商品</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#5c6f68;">没有符合条件的信息</td></tr>';
         return;
       }
       tbody.innerHTML = data.listings.map(function(l){
-        var action = l.status === 'removed'
-          ? ''
-          : '<button class="danger" data-id="' + l.id + '">下架</button>';
+        var actions = [];
+        if (l.status === 'pending' || l.status === 'rejected'){
+          actions.push('<button class="approve" data-id="' + l.id + '" data-action="approve">通过</button>');
+        }
+        if (l.status === 'pending' || l.status === 'active' || l.status === 'sold'){
+          actions.push('<button class="danger" data-id="' + l.id + '" data-action="reject">驳回</button>');
+        }
+        if (l.status !== 'removed'){
+          actions.push('<button class="danger" data-id="' + l.id + '" data-action="remove">下架</button>');
+        }
+        var thumb = l.images.length
+          ? '<img src="' + l.images[0] + '" style="width:76px;height:57px;object-fit:cover;border-radius:4px;" alt="">' +
+            (l.images.length > 1 ? '<div style="font-size:11px;color:#5c6f68;">共' + l.images.length + '张</div>' : '')
+          : '<span style="color:#5c6f68;font-size:12px;">无图</span>';
         return '<tr>' +
-          '<td>' + l.title + '</td>' +
-          '<td>' + l.seller_name + '</td>' +
-          '<td>' + l.seller_phone + '</td>' +
-          '<td>￥' + l.price + '</td>' +
-          '<td>' + l.created_at + '</td>' +
+          '<td>' + thumb + '</td>' +
+          '<td style="max-width:280px;"><div style="font-weight:600;">' + escapeHtml(l.title) + '</div>' +
+          '<div style="font-size:12px;color:#5c6f68;margin-top:4px;">' + escapeHtml(l.category) + '｜' +
+          escapeHtml(l.description).slice(0, 80) + '…</div></td>' +
+          '<td>' + escapeHtml(l.seller_name) + '</td>' +
+          '<td style="font-size:12px;">' + escapeHtml(l.contact_info) + '<div style="color:#5c6f68;">注册号 ' + l.seller_phone + '</div></td>' +
+          '<td>￥' + escapeHtml(l.price) + '</td>' +
+          '<td style="font-size:12px;">' + l.created_at + '</td>' +
           '<td><span class="status-tag status-' + l.status + '">' + LISTING_STATUS_LABEL[l.status] + '</span></td>' +
-          '<td class="row-actions">' + action + '</td>' +
+          '<td class="row-actions">' + actions.join(' ') + '</td>' +
           '</tr>';
       }).join('');
 
-      tbody.querySelectorAll('button[data-id]').forEach(function(btn){
+      tbody.querySelectorAll('button[data-action]').forEach(function(btn){
         btn.addEventListener('click', function(){
-          if (!confirm('确定要下架这个商品吗？')) return;
-          apiRequest('/api/admin/listings/' + btn.getAttribute('data-id') + '/remove', { method:'POST' })
+          var action = btn.getAttribute('data-action');
+          var confirmMsg = LISTING_ACTION_CONFIRM[action];
+          if (confirmMsg && !confirm(confirmMsg)) return;
+          apiRequest('/api/admin/listings/' + btn.getAttribute('data-id') + '/' + action, { method:'POST' })
             .then(function(){ loadListings(); })
             .catch(function(err){ alert(err.message); });
         });
       });
     });
   }
+
+  document.getElementById('listingStatusFilter').addEventListener('change', loadListings);
 
   function loadArticles(){
     apiRequest('/api/articles').then(function(data){

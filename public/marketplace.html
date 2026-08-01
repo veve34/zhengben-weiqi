@@ -173,12 +173,18 @@
         return;
       }
       list.innerHTML = data.listings.map(function(l){
-        var soldBadge = l.status === 'sold' ? '<span class="sold-badge">已售出</span>' : '';
+        var badge = '';
+        if (l.status === 'sold') badge = '<span class="sold-badge">已售出</span>';
+        else if (l.status === 'pending') badge = '<span class="sold-badge" style="background:#7a5a12;">审核中</span>';
+        else if (l.status === 'rejected') badge = '<span class="sold-badge">未通过</span>';
         var photo = l.cover_image
           ? '<img src="' + l.cover_image + '" alt="">'
           : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--pine-500);font-size:28px;">棋</div>';
+        var ownNote = '';
+        if (l.is_own && l.status === 'pending') ownNote = '<div style="font-size:12px;color:#7a5a12;margin-top:6px;">这是您发布的信息，正在等待管理员审核，通过后才会对外公开。</div>';
+        else if (l.is_own && l.status === 'rejected') ownNote = '<div style="font-size:12px;color:#9c3a3a;margin-top:6px;">这条信息未通过审核，不会对外公开。如有疑问请联系客服。</div>';
         return '<div class="listing-row" data-id="' + l.id + '">' +
-          '<div class="thumb">' + photo + soldBadge + '</div>' +
+          '<div class="thumb">' + photo + badge + '</div>' +
           '<div class="body">' +
           '<div class="meta-line">' + l.created_at.slice(0, 10) +
           '<span class="sep">|</span>发布人：' + escapeHtml(l.seller_name) +
@@ -186,6 +192,7 @@
           '<h4>' + escapeHtml(l.title) + '</h4>' +
           '<div class="desc">' + escapeHtml(l.description) + '</div>' +
           '<div class="price">￥' + escapeHtml(l.price) + '</div>' +
+          ownNote +
           '</div></div>';
       }).join('');
       list.querySelectorAll('.listing-row').forEach(function(row){
@@ -234,7 +241,7 @@
         });
       })
       .then(function(){
-        msg.textContent = '发布成功！';
+        msg.textContent = '已提交，等待管理员审核，通过后才会对外公开。您可以在列表中看到自己这条「审核中」的信息。';
         msg.className = 'form-msg ok';
         msg.style.display = 'block';
         form.reset();
@@ -242,7 +249,7 @@
           document.getElementById('modal-new-listing').classList.remove('open');
           msg.style.display = 'none';
           loadListings();
-        }, 900);
+        }, 2600);
       })
       .catch(function(err){
         msg.textContent = err.message;
@@ -261,10 +268,13 @@
       }).join('') + '</div>';
 
       var ownerActions = '';
-      if (currentMember && currentMember.id === l.user_id){
-        ownerActions = '<div style="margin:16px 0;display:flex;gap:10px;">' +
+      if (l.is_own){
+        var ownHint = '';
+        if (l.status === 'pending') ownHint = '<div class="notice" style="margin-bottom:12px;">这条信息正在等待管理员审核，通过后才会对外公开，目前只有您自己看得到。</div>';
+        else if (l.status === 'rejected') ownHint = '<div class="notice" style="background:#fbeaea;border-color:#e3b0b0;color:#9c3a3a;margin-bottom:12px;">这条信息未通过审核，不会对外公开。如有疑问请联系客服。</div>';
+        ownerActions = ownHint + '<div style="margin:16px 0;display:flex;gap:10px;">' +
           (l.status === 'active' ? '<button class="code-btn" id="markSoldBtn">标记为已售出</button>' : '') +
-          '<button class="code-btn danger" id="removeListingBtn">下架此信息</button></div>';
+          '<button class="code-btn danger" id="removeListingBtn">删除此信息</button></div>';
       }
 
       var commentsHtml = l.comments.length
@@ -285,7 +295,9 @@
         '<div style="font-size:12px;color:var(--text-light);margin:16px 0 8px;">' +
         l.created_at.slice(0, 10) + ' &nbsp;|&nbsp; 发布人：' + escapeHtml(l.seller_name) +
         ' &nbsp;|&nbsp; ' + escapeHtml(l.category) +
-        (l.status === 'sold' ? '<span style="color:#a94442;margin-left:8px;">（已售出）</span>' : '') + '</div>' +
+        (l.status === 'sold' ? '<span style="color:#a94442;margin-left:8px;">（已售出）</span>' : '') +
+        (l.status === 'pending' ? '<span style="color:#7a5a12;margin-left:8px;">（审核中）</span>' : '') +
+        (l.status === 'rejected' ? '<span style="color:#a94442;margin-left:8px;">（未通过审核）</span>' : '') + '</div>' +
         '<div style="font-size:22px;color:var(--pine-700);font-weight:700;">￥' + escapeHtml(l.price) + '</div>' +
         '<p style="margin:12px 0;white-space:pre-wrap;">' + escapeHtml(l.description) + '</p>' +
         '<div class="notice">联系方式：' + escapeHtml(l.contact_info) + '（发布人：' + escapeHtml(l.seller_name) + '）</div>' +
@@ -314,7 +326,7 @@
       var removeBtn = document.getElementById('removeListingBtn');
       if (removeBtn){
         removeBtn.addEventListener('click', function(){
-          if (!confirm('确定要下架这条信息吗？')) return;
+          if (!confirm('确定要删除这条信息吗？删除后将不再显示。')) return;
           apiRequest('/api/listings/' + id, { method: 'DELETE' }).then(function(){
             document.getElementById('modal-listing-detail').classList.remove('open');
             loadListings();
