@@ -84,6 +84,29 @@ section{ padding:60px 20px; }
 .equip-card h5{ font-size:16px; margin-bottom:8px; color:var(--pine-800); }
 .equip-card p{ font-size:13px; color:var(--text-light); }
 
+/* ---------- 围棋知识：目录 + 教学章节 ---------- */
+.knowledge-layout{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:230px 1fr; gap:40px; align-items:start; }
+.knowledge-toc{ position:sticky; top:110px; background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:20px; }
+.knowledge-toc h4{ font-size:14px; color:var(--pine-800); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #e1ece7; }
+.knowledge-toc ol{ list-style:none; counter-reset:toc; }
+.knowledge-toc li{ counter-increment:toc; margin-bottom:2px; }
+.knowledge-toc a{ display:block; padding:7px 10px; font-size:13px; color:var(--text-light); border-radius:4px; cursor:pointer; }
+.knowledge-toc a::before{ content:counter(toc) ". "; color:var(--pine-400); }
+.knowledge-toc a:hover{ background:var(--pine-50); color:var(--pine-700); }
+.knowledge-toc a.active{ background:var(--pine-700); color:#fff; }
+.knowledge-toc a.active::before{ color:rgba(255,255,255,.6); }
+
+.article-section{ background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:32px 36px; margin-bottom:24px; scroll-margin-top:110px; }
+.article-section .tag{ display:inline-block; font-size:12px; font-weight:700; color:var(--pine-500); background:var(--pine-50); padding:3px 12px; border-radius:12px; margin-bottom:12px; }
+.article-section h3{ font-size:22px; color:var(--pine-800); margin-bottom:10px; letter-spacing:1px; }
+.article-section .summary{ font-size:14px; color:var(--text-light); padding-left:14px; border-left:3px solid var(--gold); margin-bottom:20px; }
+.article-section p{ font-size:15px; color:var(--text-dark); line-height:1.9; margin-bottom:14px; }
+
+.go-diagram{ margin:22px 0; text-align:center; }
+.go-diagram-svg{ width:100%; max-width:320px; height:auto; border-radius:6px; box-shadow:0 4px 14px rgba(18,59,48,.14); }
+.go-diagram figcaption{ font-size:13px; color:var(--text-light); margin-top:12px; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.7; }
+.article-section .go-diagram-svg[viewBox^="0 0 4"]{ max-width:420px; }
+
 /* ---------- 二手棋具交易：左右分栏布局 ---------- */
 .page-banner{
   background:
@@ -215,6 +238,9 @@ footer a:hover{ color:var(--gold); }
   .knowledge-grid{ grid-template-columns:repeat(2,1fr); }
   .equip-grid{ grid-template-columns:repeat(2,1fr); }
   .listing-grid{ grid-template-columns:repeat(2,1fr); }
+  .knowledge-layout{ grid-template-columns:1fr; }
+  .knowledge-toc{ position:static; }
+  .article-section{ padding:24px 20px; }
   .market-layout{ grid-template-columns:1fr; }
   .listing-row{ flex-direction:column; }
   .listing-row .thumb{ width:100%; height:180px; }

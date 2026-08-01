@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>围棋知识 - 正本围棋</title>
-<meta name="description" content="围棋基础规则、布局定式、段位常识、术语与文化礼仪介绍。">
+<meta name="description" content="围棋入门教学：棋盘与星位、气、提子、禁着点、打劫、让子棋与胜负计算。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,8 +21,8 @@
       <nav>
         <ul>
           <li><a href="index.html">首页</a></li>
-          <li><a href="knowledge.html" class="active">围棋知识</a></li>
           <li><a href="marketplace.html">二手棋具交易</a></li>
+          <li><a href="knowledge.html" class="active">围棋知识</a></li>
           <li><a href="membership.html">会员方案</a></li>
           <li><a href="register.html" data-guest-only>会员注册</a></li>
           <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
@@ -31,14 +31,21 @@
     </div>
   </header>
 
-  <section id="knowledge">
-    <div class="section-inner">
-      <div class="section-title">
-        <div class="en">Weiqi Knowledge</div>
-        <h3>围棋知识</h3>
-        <div class="bar"></div>
-      </div>
-      <div class="knowledge-grid" id="knowledgeGrid">
+  <div class="page-banner">
+    <div class="inner">
+      <div class="en">Weiqi Knowledge</div>
+      <h2>围棋知识</h2>
+      <p>从棋盘、气与提子，到打劫、让子与胜负计算，按顺序读完这几节，就能完整地下完一盘棋。</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="knowledge-layout">
+      <aside class="knowledge-toc">
+        <h4>目录</h4>
+        <ol id="tocList"></ol>
+      </aside>
+      <div id="articleList">
         <div class="empty-hint">正在载入内容…</div>
       </div>
     </div>
@@ -71,22 +78,74 @@
   </footer>
 
 <script src="js/common.js"></script>
+<script src="js/board-diagram.js"></script>
 <script>
+  // 把内文里的 {{diagram:名称}} 换成棋盘示意图，其余段落逐段包成 <p>
+  function renderContent(text){
+    if (!text) return '';
+    return text.split(/\n{2,}/).map(function(block){
+      var trimmed = block.trim();
+      if (!trimmed) return '';
+      var m = trimmed.match(/^\{\{diagram:([a-zA-Z0-9_-]+)\}\}$/);
+      if (m) return renderBoardDiagram(m[1]);
+      return '<p>' + escapeHtml(trimmed) + '</p>';
+    }).join('');
+  }
+
   function loadArticles(){
-    var grid = document.getElementById('knowledgeGrid');
+    var list = document.getElementById('articleList');
+    var toc = document.getElementById('tocList');
     apiRequest('/api/articles').then(function(data){
       if (!data.articles || !data.articles.length){
-        grid.innerHTML = '<div class="empty-hint">暂无内容</div>';
+        list.innerHTML = '<div class="empty-hint">暂无内容</div>';
         return;
       }
-      grid.innerHTML = data.articles.map(function(a){
-        return '<div class="card"><div class="thumb">' + a.title.charAt(0) + '</div><div class="body">' +
-          '<span class="tag">' + a.tag + '</span><h4>' + a.title + '</h4><p>' + a.summary + '</p></div></div>';
+      list.innerHTML = data.articles.map(function(a){
+        return '<article class="article-section" id="article-' + a.id + '">' +
+          '<span class="tag">' + escapeHtml(a.tag) + '</span>' +
+          '<h3>' + escapeHtml(a.title) + '</h3>' +
+          '<div class="summary">' + escapeHtml(a.summary) + '</div>' +
+          renderContent(a.content) +
+          '</article>';
       }).join('');
+
+      toc.innerHTML = data.articles.map(function(a){
+        return '<li><a data-target="article-' + a.id + '">' + escapeHtml(a.title) + '</a></li>';
+      }).join('');
+
+      toc.querySelectorAll('a').forEach(function(link){
+        link.addEventListener('click', function(){
+          var el = document.getElementById(link.getAttribute('data-target'));
+          if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
+
+      setupScrollSpy();
     }).catch(function(){
-      grid.innerHTML = '<div class="empty-hint">内容载入失败，请稍后重试</div>';
+      list.innerHTML = '<div class="empty-hint">内容载入失败，请稍后重试</div>';
     });
   }
+
+  // 卷动时高亮目录中当前所在的章节
+  function setupScrollSpy(){
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.article-section'));
+    var links = Array.prototype.slice.call(document.querySelectorAll('.knowledge-toc a'));
+    if (!sections.length) return;
+
+    function update(){
+      var offset = 140;
+      var current = sections[0];
+      sections.forEach(function(s){
+        if (s.getBoundingClientRect().top <= offset) current = s;
+      });
+      links.forEach(function(l){
+        l.classList.toggle('active', l.getAttribute('data-target') === current.id);
+      });
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
   loadArticles();
 </script>
 </body>

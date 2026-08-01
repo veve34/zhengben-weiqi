@@ -82,7 +82,8 @@
       <h3 style="margin-top:0;">新增文章</h3>
       <input type="text" id="newTag" placeholder="分类（例如：基础入门）">
       <input type="text" id="newTitle" placeholder="标题">
-      <textarea id="newSummary" placeholder="摘要内容"></textarea>
+      <textarea id="newSummary" placeholder="摘要（列在标题下方的一句话）"></textarea>
+      <textarea id="newContent" placeholder="正文内容。段落之间空一行分隔；要插入棋盘示意图，在单独一行写 {{diagram:名称}}，可用名称：board19、liberties、capture、forbidden、ko、handicap、territory" style="min-height:160px;"></textarea>
       <input type="number" id="newSort" placeholder="排序（数字越小越前面）" value="0">
       <button id="addBtn">新增</button>
     </div>
@@ -90,7 +91,7 @@
     <div class="card">
       <h3 style="margin-top:0;">现有文章</h3>
       <table>
-        <thead><tr><th>分类</th><th>标题</th><th>摘要</th><th>排序</th><th>操作</th></tr></thead>
+        <thead><tr><th>分类</th><th>标题</th><th>摘要</th><th>正文</th><th>排序</th><th>操作</th></tr></thead>
         <tbody id="articleList"></tbody>
       </table>
     </div>
@@ -234,9 +235,10 @@
       var tbody = document.getElementById('articleList');
       tbody.innerHTML = data.articles.map(function(a){
         return '<tr data-id="' + a.id + '">' +
-          '<td><input value="' + a.tag + '" data-field="tag"></td>' +
-          '<td><input value="' + a.title + '" data-field="title"></td>' +
-          '<td><textarea data-field="summary">' + a.summary + '</textarea></td>' +
+          '<td><input value="' + escapeHtml(a.tag) + '" data-field="tag"></td>' +
+          '<td><input value="' + escapeHtml(a.title) + '" data-field="title"></td>' +
+          '<td><textarea data-field="summary">' + escapeHtml(a.summary) + '</textarea></td>' +
+          '<td><textarea data-field="content" style="min-width:260px;min-height:150px;">' + escapeHtml(a.content || '') + '</textarea></td>' +
           '<td><input type="number" value="' + a.sort_order + '" data-field="sortOrder" style="width:70px;"></td>' +
           '<td class="row-actions"><button class="saveBtn">保存</button><button class="danger delBtn">删除</button></td>' +
           '</tr>';
@@ -250,6 +252,7 @@
             tag: tr.querySelector('[data-field="tag"]').value,
             title: tr.querySelector('[data-field="title"]').value,
             summary: tr.querySelector('[data-field="summary"]').value,
+            content: tr.querySelector('[data-field="content"]').value,
             sortOrder: tr.querySelector('[data-field="sortOrder"]').value
           };
           apiRequest('/api/articles/' + id, { method:'PUT', body: JSON.stringify(payload) })
@@ -274,6 +277,7 @@
       tag: document.getElementById('newTag').value,
       title: document.getElementById('newTitle').value,
       summary: document.getElementById('newSummary').value,
+      content: document.getElementById('newContent').value,
       sortOrder: document.getElementById('newSort').value
     };
     apiRequest('/api/articles', { method:'POST', body: JSON.stringify(payload) })
@@ -281,6 +285,7 @@
         document.getElementById('newTag').value = '';
         document.getElementById('newTitle').value = '';
         document.getElementById('newSummary').value = '';
+        document.getElementById('newContent').value = '';
         document.getElementById('newSort').value = '0';
         loadArticles();
       })
