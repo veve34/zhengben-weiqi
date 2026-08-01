@@ -8,7 +8,7 @@ router.use(requireAdmin);
 
 router.get('/', function (req, res) {
   var status = String(req.query.status || 'pending');
-  var base = 'SELECT l.*, u.real_name AS seller_name, u.phone AS seller_phone FROM listings l JOIN users u ON u.id = l.user_id';
+  var base = 'SELECT l.*, u.username AS seller_name, u.email AS seller_email FROM listings l JOIN users u ON u.id = l.user_id';
   var order = ' ORDER BY l.created_at DESC, l.id DESC';
   var rows = status === 'all'
     ? db.prepare(base + order).all()

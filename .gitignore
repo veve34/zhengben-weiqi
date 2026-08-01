@@ -7,3 +7,4 @@ data/*.db-wal
 data/*.db-shm
 public/uploads/listings/*
 !public/uploads/listings/.gitkeep
+data/id-cards/

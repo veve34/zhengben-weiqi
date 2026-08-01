@@ -53,5 +53,14 @@ document.addEventListener('DOMContentLoaded', function(){
     if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m){ m.classList.remove('open'); });
   });
 
+  var logoutLink = document.getElementById('logoutLink');
+  if (logoutLink){
+    logoutLink.addEventListener('click', function(){
+      apiRequest('/api/auth/logout', { method: 'POST' }).then(function(){
+        window.location.href = 'index.html';
+      });
+    });
+  }
+
   refreshSession();
 });

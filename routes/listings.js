@@ -35,7 +35,7 @@ router.get('/', optionalMember, function (req, res) {
   }
 
   var rows = db.prepare(
-    'SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE ' +
+    'SELECT l.*, u.username AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE ' +
     where + ' ORDER BY l.created_at DESC, l.id DESC'
   ).all(params);
 
@@ -49,7 +49,7 @@ router.get('/', optionalMember, function (req, res) {
 
 router.get('/:id', optionalMember, function (req, res) {
   var listing = db.prepare(
-    'SELECT l.*, u.real_name AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.id = ?'
+    'SELECT l.*, u.username AS seller_name FROM listings l JOIN users u ON u.id = l.user_id WHERE l.id = ?'
   ).get(req.params.id);
   if (!listing) return res.status(404).json({ error: '找不到该信息' });
 
@@ -61,7 +61,7 @@ router.get('/:id', optionalMember, function (req, res) {
   listing.is_own = isOwn;
   attachImages(listing);
   listing.comments = db.prepare(
-    'SELECT c.id, c.content, c.created_at, u.real_name AS author_name FROM listing_comments c JOIN users u ON u.id = c.user_id WHERE c.listing_id = ? ORDER BY c.id ASC'
+    'SELECT c.id, c.content, c.created_at, u.username AS author_name FROM listing_comments c JOIN users u ON u.id = c.user_id WHERE c.listing_id = ? ORDER BY c.id ASC'
   ).all(listing.id);
   res.json({ listing: listing });
 });

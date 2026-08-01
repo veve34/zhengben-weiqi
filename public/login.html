@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>会员登录 - 正本围棋</title>
+<title>登录 - 正本围棋</title>
 <meta name="description" content="登录正本围棋会员帐号。">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -23,9 +23,10 @@
           <li><a href="index.html">首页</a></li>
           <li><a href="marketplace.html">二手棋具交易</a></li>
           <li><a href="knowledge.html">围棋知识</a></li>
-          <li><a href="membership.html">会员方案</a></li>
-          <li><a href="register.html" data-guest-only>会员注册</a></li>
           <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="register.html" data-guest-only>注册</a></li>
+          <li><a href="login.html" class="active" data-guest-only>登录</a></li>
+          <li><a id="logoutLink" data-member-only style="display:none">登出</a></li>
         </ul>
       </nav>
     </div>
@@ -42,8 +43,8 @@
       <div class="register-wrap">
         <form id="loginForm">
           <div class="form-group full" style="margin-bottom:18px;">
-            <label>手机号码 <span class="req">*</span></label>
-            <input type="tel" name="phone" placeholder="请输入注册时的手机号" maxlength="11" required>
+            <label>用户名 <span class="req">*</span></label>
+            <input type="text" name="username" placeholder="请输入注册时的用户名" maxlength="20" required>
           </div>
           <div class="form-group full" style="margin-bottom:18px;">
             <label>登录密码 <span class="req">*</span></label>
@@ -91,7 +92,7 @@
     var msg = document.getElementById('loginMsg');
     apiRequest('/api/auth/login', {
       method:'POST',
-      body: JSON.stringify({ phone: form.phone.value.trim(), password: form.password.value })
+      body: JSON.stringify({ username: form.username.value.trim(), password: form.password.value })
     }).then(function(){
       msg.textContent = '登录成功！';
       msg.className = 'form-msg ok';

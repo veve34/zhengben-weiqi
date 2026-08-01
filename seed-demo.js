@@ -10,29 +10,20 @@ const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
-const { encryptIdCard } = require('./services/idCardCrypto');
 
 const DEMO_IMAGE_DIR = path.join(__dirname, 'public', 'images', 'demo');
 const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads', 'listings');
 
-const ID_WEIGHTS = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-const ID_CHECK_CODES = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
-
-function buildIdCard(prefix17) {
-  var sum = 0;
-  for (var i = 0; i < 17; i++) sum += Number(prefix17[i]) * ID_WEIGHTS[i];
-  return prefix17 + ID_CHECK_CODES[sum % 11];
-}
-
+// name 仅用于脚本内部对应贴文，实际入库与显示的是 username
 const MEMBERS = [
-  { name: '王建国', phone: '13857124093', idPrefix: '33010419690312281', level: '业余段位', city: '杭州市西湖区' },
-  { name: '李思远', phone: '13906543271', idPrefix: '33010219850724159', level: '业余段位', city: '杭州市上城区' },
-  { name: '陈雅琴', phone: '15857206348', idPrefix: '33018119920218204', level: '入门级位', city: '杭州市余杭区' },
-  { name: '张伟民', phone: '13705719826', idPrefix: '33010319760905117', level: '业余段位', city: '杭州市拱墅区' },
-  { name: '刘志强', phone: '18606514237', idPrefix: '33011019880611253', level: '零基础', city: '杭州市滨江区' },
-  { name: '周瑾', phone: '13588129470', idPrefix: '33010519951130146', level: '入门级位', city: '杭州市萧山区' },
-  { name: '吴海涛', phone: '13957186052', idPrefix: '33010819710426193', level: '职业棋手', city: '杭州市钱塘区' },
-  { name: '郑晓峰', phone: '15168273904', idPrefix: '33018219900817225', level: '业余段位', city: '杭州市临平区' }
+  { name: '王建国', username: 'kaya_1969', email: 'kaya1969@example.com', level: '业余段位' },
+  { name: '李思远', username: 'siyuan_go', email: 'siyuan.go@example.com', level: '业余段位' },
+  { name: '陈雅琴', username: 'yaqin_chen', email: 'yaqin.chen@example.com', level: '入门级位' },
+  { name: '张伟民', username: 'weimin_z', email: 'weimin.z@example.com', level: '业余段位' },
+  { name: '刘志强', username: 'zhiqiang88', email: 'zhiqiang88@example.com', level: '零基础' },
+  { name: '周瑾', username: 'jin_zhou', email: 'jin.zhou@example.com', level: '入门级位' },
+  { name: '吴海涛', username: 'haitao_qishe', email: 'haitao.qishe@example.com', level: '职业棋手' },
+  { name: '郑晓峰', username: 'xiaofeng_z', email: 'xiaofeng.z@example.com', level: '业余段位' }
 ];
 
 // created_at 采用固定日期，避免每次执行结果不同
@@ -174,15 +165,15 @@ function run() {
   var memberIds = {};
 
   MEMBERS.forEach(function (m) {
-    var existingUser = db.prepare('SELECT id FROM users WHERE phone = ?').get(m.phone);
+    var existingUser = db.prepare('SELECT id FROM users WHERE username = ?').get(m.username);
     if (existingUser) {
       memberIds[m.name] = existingUser.id;
       return;
     }
-    var idCard = buildIdCard(m.idPrefix);
+    // 示范会员直接写入已审核状态，且不带身份证照片（这些不是真实注册的账号）
     var result = db.prepare(
-      "INSERT INTO users (real_name, phone, id_card_encrypted, id_card_last4, password_hash, level, email, address, status) VALUES (?, ?, ?, ?, ?, ?, '', ?, 'approved')"
-    ).run(m.name, m.phone, encryptIdCard(idCard), idCard.slice(-4), passwordHash, m.level, m.city);
+      "INSERT INTO users (username, email, password_hash, level, id_card_front, id_card_back, status) VALUES (?, ?, ?, ?, '', '', 'approved')"
+    ).run(m.username, m.email, passwordHash, m.level);
     memberIds[m.name] = result.lastInsertRowid;
   });
   console.log('已建立 ' + Object.keys(memberIds).length + ' 位示范会员（均为已审核状态，登录密码 demo123456）');

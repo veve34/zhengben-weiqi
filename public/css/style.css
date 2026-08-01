@@ -18,6 +18,10 @@ body{
   color:var(--text-dark);
   background:var(--pine-50);
   line-height:1.7;
+  /* 内容不足一屏时，靠 footer 的 margin-top:auto 把页脚推到视窗底部，避免下方露出一段背景色 */
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 a{ text-decoration:none; color:inherit; }
 img{ max-width:100%; display:block; }
@@ -62,6 +66,13 @@ nav a:hover, nav a.active{ background:var(--pine-700); color:#fff; }
 
 section{ padding:60px 20px; }
 .section-inner{ max-width:1180px; margin:0 auto; }
+
+/* 主内容区撑满剩余高度；内容不足一屏时，以 auto 外距把它垂直置中。
+   内容够长时 auto 外距自动失效，长页面不受影响。 */
+body > section{ flex:1 0 auto; display:flex; flex-direction:column; }
+body > section > .section-inner,
+body > section > .market-layout,
+body > section > .knowledge-layout{ width:100%; margin-top:auto; margin-bottom:auto; }
 .section-title{ text-align:center; margin-bottom:40px; }
 .section-title h3{ font-size:26px; color:var(--pine-800); letter-spacing:2px; }
 .section-title .en{ font-size:12px; color:var(--pine-400); letter-spacing:4px; text-transform:uppercase; margin-bottom:6px; }
@@ -189,6 +200,11 @@ section{ padding:60px 20px; }
 .form-group label .req{ color:#c0392b; }
 .form-group input, .form-group select, .form-group textarea{ width:100%; padding:10px 12px; border:1px solid #c9dbd2; border-radius:4px; font-size:14px; background:#fff; color:var(--text-dark); font-family:inherit; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ outline:none; border-color:var(--pine-500); box-shadow:0 0 0 2px rgba(45,122,97,.15); }
+.captcha-row{ display:flex; gap:10px; align-items:stretch; }
+.captcha-row input{ flex:1; min-width:0; }
+.captcha-row img{ height:42px; width:auto; border:1px solid #c9dbd2; border-radius:4px; cursor:pointer; background:#fff; flex-shrink:0; }
+.form-group .hint{ font-size:11px; color:var(--text-light); margin-top:5px; line-height:1.5; }
+
 .agree-row{ display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text-light); margin:18px 0 24px; }
 .agree-row a{ color:var(--pine-600); font-weight:600; text-decoration:underline; }
 .agree-row a:hover{ color:var(--pine-800); }
@@ -221,7 +237,7 @@ section{ padding:60px 20px; }
 .member-card .row span:last-child{ font-weight:600; color:var(--text-dark); }
 .member-card .tier-tag{ display:inline-block; background:var(--pine-600); color:#fff; font-size:12px; padding:2px 10px; border-radius:10px; }
 
-footer{ background:var(--pine-900); border-top:1px solid rgba(255,255,255,.08); color:#93a9a0; font-size:12px; padding:40px 20px 22px; }
+footer{ background:var(--pine-900); border-top:1px solid rgba(255,255,255,.08); color:#93a9a0; font-size:12px; padding:40px 20px 22px; margin-top:auto; }
 footer a{ color:#93a9a0; }
 footer a:hover{ color:var(--gold); }
 .footer-inner{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr; gap:50px; text-align:left; padding-bottom:26px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:20px; }

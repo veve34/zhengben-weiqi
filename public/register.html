@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>会员注册 - 正本围棋</title>
-<meta name="description" content="注册正本围棋会员，需填写真实身份信息，提交后等待管理员审核。">
+<title>注册 - 正本围棋</title>
+<meta name="description" content="注册正本围棋会员，需上传身份证照片供实名审核，审核通过后方可登录使用。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -23,48 +23,63 @@
           <li><a href="index.html">首页</a></li>
           <li><a href="marketplace.html">二手棋具交易</a></li>
           <li><a href="knowledge.html">围棋知识</a></li>
-          <li><a href="membership.html">会员方案</a></li>
-          <li><a href="register.html" class="active" data-guest-only>会员注册</a></li>
           <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="register.html" class="active" data-guest-only>注册</a></li>
+          <li><a href="login.html" data-guest-only>登录</a></li>
+          <li><a id="logoutLink" data-member-only style="display:none">登出</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <!-- 会员注册 -->
   <section id="register" class="register-section">
     <div class="section-inner">
       <div class="section-title">
         <div class="en">Member Registration</div>
-        <h3>个人会员注册</h3>
+        <h3>会员注册</h3>
         <div class="bar"></div>
       </div>
 
       <div class="register-wrap">
         <div class="notice">
-          根据国家网络实名管理相关规定，注册本平台会员需填写真实身份信息，信息仅用于身份核验，我们将依法予以保密。提交后需等待管理员审核，审核通过后方可登录使用。
+          根据国家网络实名管理相关规定，注册本平台会员需上传本人身份证正反面照片供实名审核。照片仅用于身份核验，采隔离存储，不会对外公开。提交后需等待管理员审核，审核通过后方可登录使用。
         </div>
 
         <form id="registerForm">
           <div class="form-row">
             <div class="form-group">
-              <label>真实姓名 <span class="req">*</span></label>
-              <input type="text" name="realName" placeholder="请输入您的真实姓名" required>
+              <label>用户名 <span class="req">*</span></label>
+              <input type="text" name="username" placeholder="3-20位字母、数字或下划线" maxlength="20" required>
+              <div class="hint">用于登录，也是您在平台上公开显示的名称</div>
             </div>
             <div class="form-group">
-              <label>身份证号 <span class="req">*</span></label>
-              <input type="text" name="idCard" placeholder="请输入18位身份证号码" maxlength="18" required>
+              <label>邮箱 <span class="req">*</span></label>
+              <input type="email" name="email" placeholder="请输入常用邮箱" required>
+              <div class="hint">用于接收审核结果与重要通知</div>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>手机号码 <span class="req">*</span></label>
-              <input type="tel" name="phone" placeholder="请输入常用手机号" maxlength="11" required>
+              <label>密码 <span class="req">*</span></label>
+              <input type="password" name="password" placeholder="至少6位" minlength="6" required>
             </div>
             <div class="form-group">
-              <label>登录密码 <span class="req">*</span></label>
-              <input type="password" name="password" placeholder="至少6位" required>
+              <label>确认密码 <span class="req">*</span></label>
+              <input type="password" name="confirmPassword" placeholder="请再次输入密码" minlength="6" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>身份证正面照片 <span class="req">*</span></label>
+              <input type="file" name="idCardFront" accept="image/jpeg,image/png,image/webp" required>
+              <div class="hint">人像面，需清晰可辨。JPG / PNG / WEBP，单张不超过 8MB</div>
+            </div>
+            <div class="form-group">
+              <label>身份证背面照片 <span class="req">*</span></label>
+              <input type="file" name="idCardBack" accept="image/jpeg,image/png,image/webp" required>
+              <div class="hint">国徽面，需清晰可辨。JPG / PNG / WEBP，单张不超过 8MB</div>
             </div>
           </div>
 
@@ -80,19 +95,18 @@
               </select>
             </div>
             <div class="form-group">
-              <label>常用邮箱</label>
-              <input type="email" name="email" placeholder="用于接收通知（选填）">
+              <label>验证码 <span class="req">*</span></label>
+              <div class="captcha-row">
+                <input type="text" name="captcha" placeholder="请输入图中字符" maxlength="4" autocomplete="off" required>
+                <img id="captchaImg" src="/api/captcha" alt="验证码" title="点击更换验证码">
+              </div>
+              <div class="hint">看不清？点击图片可更换一张</div>
             </div>
-          </div>
-
-          <div class="form-group full">
-            <label>常住地址</label>
-            <input type="text" name="address" placeholder="请输入常住地址（选填）">
           </div>
 
           <div class="agree-row">
             <input type="checkbox" id="agree" required>
-            <label for="agree">我已阅读并同意<a href="#" class="policy-link" data-policy="terms">《正本围棋用户注册协议》</a>及<a href="#" class="policy-link" data-policy="privacy">《个人信息保护声明》</a>，承诺所填信息真实有效。</label>
+            <label for="agree">我已阅读并同意<a href="#" class="policy-link" data-policy="terms">《正本围棋用户注册协议》</a>及<a href="#" class="policy-link" data-policy="privacy">《个人信息保护声明》</a>，并确认所提交的身份证照片为本人证件。</label>
           </div>
 
           <button type="submit" class="submit-btn">提交注册</button>
@@ -108,19 +122,57 @@
     <div class="modal-box">
       <div class="modal-header"><h4>正本围棋用户注册协议</h4><button class="modal-close" data-close>&times;</button></div>
       <div class="modal-body">
-        <h5>一、协议的接受</h5>
-        <p>欢迎注册成为正本围棋会员。您在勾选同意本协议并完成注册前，应仔细阅读本协议全部内容。您一旦完成注册，即视为已充分理解并同意接受本协议的全部约束。</p>
-        <h5>二、账号注册与实名信息</h5>
-        <p>为符合国家网络实名管理相关规定，注册本平台会员须提供真实姓名、身份证号码及本人常用手机号码。您应确保所提交信息真实、准确、完整，如信息发生变更应及时更新。</p>
-        <p>因提供虚假信息导致的一切后果由用户本人承担，正本围棋有权对信息不实的账号采取限制或暂停服务等措施。</p>
-        <h5>三、账号使用规范</h5>
-        <p>用户应妥善保管账号与密码，不得将账号转让、出借他人使用。用户在平台内的一切行为应遵守国家法律法规及公序良俗，不得利用本平台从事任何违法违规活动。</p>
-        <h5>四、服务内容</h5>
-        <p>正本围棋目前为用户提供围棋知识普及、棋具文化介绍、二手棋具信息发布等基础会员服务，进阶付费服务详情将于正式开放前另行公告。平台有权根据实际运营情况调整、增减服务内容。</p>
-        <h5>五、二手棋具信息发布</h5>
-        <p>正本围棋仅为用户提供二手棋具信息发布与留言联系功能，不参与、不担保任何交易过程，交易由买卖双方自行线下完成并自行承担相应风险与责任。用户发布的商品信息应真实准确，不得发布违禁、侵权或欺诈性内容，正本围棋有权对违规内容予以下架处理。</p>
-        <h5>六、协议的变更</h5>
-        <p>正本围棋有权在必要时修订本协议条款，修订后的协议将在平台内公布，若您继续使用本平台服务，即视为接受修订后的协议。</p>
+        <h5>一、协议的接受与适用范围</h5>
+        <p>本协议由您与正本围棋平台的主办单位杭州精尖硬核棋道信息科技有限公司订立。请您在注册前完整阅读本协议全部条款，尤其是关于责任限制与争议解决的内容。您勾选同意并提交注册，即表示已充分理解并接受本协议的全部约束；若不同意其中任何内容，请勿注册或使用本平台。</p>
+        <p>本协议适用于您使用本平台提供的全部服务，包括浏览围棋知识内容、发布与浏览二手棋具信息、使用留言功能等。</p>
+
+        <h5>二、账号注册与实名审核</h5>
+        <p>注册时您需要提供：用户名（3-20位字母、数字或下划线）、邮箱、登录密码，并上传本人身份证正面与背面照片；棋力水平为选填项。为防止机器批量注册，注册时还需填写图形验证码。</p>
+        <p>为符合国家网络实名管理相关规定，您提交的身份证照片将由平台管理员进行人工审核。审核通过后账号方可登录使用；审核期间或未通过审核时，账号无法登录。</p>
+        <p>您应确保所提交的证件为本人所有、信息真实有效，不得使用他人证件或伪造、变造的证件注册。因提供虚假信息或冒用他人身份所产生的一切后果由您本人承担，平台有权对存疑账号不予通过、暂停或终止其服务。</p>
+
+        <h5>三、账号安全与保管</h5>
+        <p>用户名同时是您在平台上公开显示的名称。您应妥善保管账号与密码，不得将账号转让、出借或以任何形式提供他人使用。通过您的账号所实施的一切行为，均视为您本人的行为。</p>
+        <p>若发现账号遭他人非法使用，您应立即通知平台。在平台采取措施之前因此产生的损失，由您自行承担。</p>
+
+        <h5>四、账号冻结、注销与申诉</h5>
+        <p>若您违反本协议或相关法律法规，或平台有合理理由认为您的账号存在风险，平台可视情节采取限制功能、暂停或终止服务等措施。</p>
+        <p>您可随时通过本协议末尾的联系方式申请注销账号。账号注销后，平台将依《个人信息保护声明》处理您的个人信息。若您对平台的处理措施有异议，可通过同一联系方式提出申诉。</p>
+
+        <h5>五、用户行为规范</h5>
+        <p>您在平台内的一切行为应遵守中华人民共和国法律法规及公序良俗，不得利用本平台从事任何违法违规活动，包括但不限于：发布违法、虚假、侵权、欺诈、骚扰或涉及他人隐私的内容；以任何方式干扰平台正常运行；未经许可抓取或复制平台数据。</p>
+        <p>平台有权对违规内容予以驳回或下架，并保留追究相应责任的权利。</p>
+
+        <h5>六、二手棋具信息发布</h5>
+        <p>本平台仅为会员提供二手棋具的信息发布与留言联系功能，不直接经营交易服务，不参与、不担保任何交易过程。交易由买卖双方自行线下完成，并自行承担相应风险与责任。</p>
+        <p>您发布的信息须经管理员审核通过后方会对外公开。您应确保所发布的物品信息真实准确，且该物品为您有权处分之物，不得发布违禁品或侵犯他人权利的物品。您在发布内容中自行填写的联系方式将对外公开，请自行判断愿意公开的范围。</p>
+
+        <h5>七、个人信息保护</h5>
+        <p>平台重视您的个人信息安全，收集与处理规则详见《个人信息保护声明》，该声明为本协议不可分割的组成部分。</p>
+
+        <h5>八、知识产权</h5>
+        <p>平台自行编写的围棋知识内容、页面设计、图示与程序等，其知识产权归平台所有；未经书面许可，不得转载、改编或用于商业用途。</p>
+        <p>您发布的内容其权利仍归您所有，但您授权平台在提供服务所必需的范围内展示与存储该等内容。您应确保所发布内容不侵犯任何第三方的合法权益。</p>
+
+        <h5>九、免责声明与责任限制</h5>
+        <p>平台按现状提供服务。对因网络故障、系统维护、不可抗力等非平台过错原因造成的服务中断或数据丢失，在法律允许的范围内不承担责任。</p>
+        <p>会员之间的线下交易纠纷由交易双方自行解决，平台可在合理范围内协助提供必要信息，但不承担交易担保责任。</p>
+
+        <h5>十、不可抗力</h5>
+        <p>因自然灾害、政府行为、网络运营商故障、黑客攻击等不能预见、不能避免且不能克服的客观情况，导致平台无法履行或延迟履行本协议的，平台在受影响范围内免于承担责任。</p>
+
+        <h5>十一、法律适用与争议解决</h5>
+        <p>本协议的订立、执行与解释均适用中华人民共和国法律。因本协议产生的争议，双方应友好协商解决；协商不成的，任一方可向平台主办单位所在地有管辖权的人民法院提起诉讼。</p>
+
+        <h5>十二、通知送达</h5>
+        <p>平台可通过站内公告、页面提示或您注册时填写的邮箱向您发送通知，该等通知于发出之日视为送达。请保持所留邮箱有效并及时查看。</p>
+
+        <h5>十三、协议的变更与服务终止</h5>
+        <p>平台有权在必要时修订本协议，修订后的协议将在平台内公布。若您继续使用本平台服务，即视为接受修订后的协议；若不接受，应停止使用并可申请注销账号。平台如需终止全部或部分服务，将提前在平台内公告。</p>
+
+        <h5>十四、其他</h5>
+        <p>本协议部分条款若被认定为无效，不影响其余条款的效力。本协议标题仅为便于阅读，不影响条款含义的解释。</p>
+        <p>联系方式：contact@jingjianyinghe.com（主办单位：杭州精尖硬核棋道信息科技有限公司）</p>
       </div>
       <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
     </div>
@@ -131,18 +183,47 @@
     <div class="modal-box">
       <div class="modal-header"><h4>正本围棋个人信息保护声明</h4><button class="modal-close" data-close>&times;</button></div>
       <div class="modal-body">
-        <h5>一、信息收集范围</h5>
-        <p>为完成会员实名注册及提供相应服务，我们将收集您的真实姓名、身份证号码、手机号码、登录密码等必要信息，以及您自愿填写的邮箱、常住地址、棋力水平等信息。身份证号码属于敏感个人信息，我们会加密存储，仅用于身份核验，不会用于本声明约定之外的用途。</p>
-        <h5>二、信息使用目的</h5>
-        <p>您提供的信息仅用于会员身份核验、账号安全保护及必要的服务通知，不会用于本声明约定之外的用途。</p>
-        <h5>三、信息存储与保密</h5>
-        <p>我们将采取符合行业标准的安全技术措施保护您的个人信息（包括密码加密存储、传输加密等），防止信息被未经授权的访问、披露、篡改或毁损。除法律法规要求或经您本人同意外，我们不会向第三方提供、公开或出售您的个人信息。</p>
-        <h5>四、二手棋具信息发布</h5>
-        <p>若您选择发布二手棋具信息，您在发布内容中主动填写的真实姓名、联系方式（电话/微信等）、商品照片及描述将对平台所有访问者公开展示，用于方便买家与您联系。请您自行判断愿意公开的信息范围，交易本身由买卖双方自行线下完成，平台不参与、不担保交易过程。</p>
-        <h5>五、您的权利</h5>
-        <p>您有权查询、更正您的个人信息，如需注销账号或删除个人信息，可通过平台留下的联系方式与我们联系，我们将在法律法规允许的范围内予以处理。</p>
-        <h5>六、声明的更新</h5>
-        <p>本声明可能随平台服务的调整及法律法规的变化进行更新，更新后的内容将在本平台公布。</p>
+        <h5>一、声明的目的</h5>
+        <p>杭州精尖硬核棋道信息科技有限公司（以下称"我们"）深知个人信息对您的重要性。本声明说明我们在您使用正本围棋平台时会收集哪些个人信息、如何使用与保护这些信息，以及您享有哪些权利。</p>
+
+        <h5>二、处理个人信息的法律依据</h5>
+        <p>我们处理您的个人信息，依据《中华人民共和国个人信息保护法》《中华人民共和国网络安全法》等法律法规，并以取得您的同意、履行与您订立的协议所必需，以及履行法定义务为依据。</p>
+
+        <h5>三、适用范围</h5>
+        <p>本声明适用于您通过本平台注册账号、浏览内容、发布二手棋具信息及使用留言功能等全部场景。</p>
+
+        <h5>四、我们收集哪些信息、如何使用</h5>
+        <p>注册账号时，我们收集：用户名（用于登录，并在平台上公开显示）、邮箱（用于接收审核结果与服务通知）、登录密码（以不可逆方式加密保存，我们无法还原）、身份证正反面照片（仅用于实名审核）、棋力水平（选填，仅用于会员资料展示）。</p>
+        <p>为防止机器批量注册，注册页面会产生图形验证码。我们仅在验证期间以加密的临时凭证保存该验证码，验证完成或过期后即失效，不与您的账号关联留存。</p>
+        <p>发布二手棋具信息时，我们收集您填写的物品标题、分类、状况说明、价格、联系方式与物品照片。其中联系方式与物品内容会随信息一并对外公开，请自行判断愿意公开的范围；您的身份证照片不会因发布信息而被公开。</p>
+        <p>我们不会将上述信息用于本声明约定之外的用途。若需超出范围使用，会另行取得您的同意。</p>
+
+        <h5>五、关于身份证照片的特别说明</h5>
+        <p>身份证照片属于敏感个人信息。我们仅将其用于实名审核这一目的，并采取以下措施：照片存放于不对外提供访问的独立目录，无法透过公开网址取得；仅经授权的平台管理员在审核时可以查看；不会向任何第三方提供、公开或出售。</p>
+        <p>若您对提交证件照片有顾虑，可在提交前对照片作必要遮挡处理，但须保证姓名、证件号码与人像清晰可辨，否则可能无法通过审核。</p>
+
+        <h5>六、我们如何保护您的信息安全</h5>
+        <p>我们采取符合行业惯例的技术与管理措施保护您的个人信息，包括：密码以加盐哈希方式存储；登录凭证以签章方式下发并设有有效期；敏感档案与公开档案分离存放；管理后台设有访问权限控制。建议您始终通过 HTTPS 访问本平台。</p>
+        <p>尽管我们尽力保护，但互联网并非绝对安全的环境。若不幸发生个人信息安全事件，我们将依法及时告知受影响的用户，并向有关主管部门报告。</p>
+
+        <h5>七、信息共享与对外提供</h5>
+        <p>除下列情形外，我们不会向第三方共享、转让或公开您的个人信息：已取得您的单独同意；法律法规规定或司法、行政机关依法定程序要求提供；为维护平台或他人合法权益所必需。</p>
+
+        <h5>八、未成年人保护</h5>
+        <p>本平台主要面向成年用户。若您未满十八周岁，请在监护人的同意与陪同下使用本平台并提交个人信息。若我们发现在未取得监护人同意的情况下收集了未成年人的个人信息，将设法及时删除。</p>
+
+        <h5>九、您的权利</h5>
+        <p>您有权查询、更正您的个人信息，也有权撤回同意、要求删除个人信息或注销账号。账号注销后，我们将删除或匿名化处理您的个人信息，其中身份证照片会一并删除；法律法规另有留存要求的除外。</p>
+        <p>如需行使上述权利，请通过本声明末尾的联系方式与我们联系，我们将在核实您的身份后于合理期限内处理。</p>
+
+        <h5>十、Cookie 的使用</h5>
+        <p>为维持您的登录状态与校验图形验证码，我们会在您的浏览器中写入必要的 Cookie。这些 Cookie 仅用于上述功能，不用于广告追踪。您可以在浏览器中清除它们，但可能导致无法正常登录。</p>
+
+        <h5>十一、本声明的更新</h5>
+        <p>本声明可能随平台服务的调整及法律法规的变化而更新，更新后的内容将在本平台公布。涉及重大变更时，我们会以显著方式提示您。</p>
+
+        <h5>十二、联系我们</h5>
+        <p>如对本声明或您的个人信息处理有任何疑问，可联系：contact@jingjianyinghe.com（主办单位：杭州精尖硬核棋道信息科技有限公司）。</p>
       </div>
       <div class="modal-footer"><button data-close>我已阅读，关闭窗口</button></div>
     </div>
@@ -176,30 +257,44 @@
 
 <script src="js/common.js"></script>
 <script>
+  var captchaImg = document.getElementById('captchaImg');
+  function refreshCaptcha(){
+    captchaImg.src = '/api/captcha?t=' + Date.now();
+  }
+  captchaImg.addEventListener('click', refreshCaptcha);
+
   document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
     var form = e.target;
     var msg = document.getElementById('registerMsg');
-    var payload = {
-      realName: form.realName.value.trim(),
-      phone: form.phone.value.trim(),
-      idCard: form.idCard.value.trim(),
-      password: form.password.value,
-      level: form.level.value,
-      email: form.email.value.trim(),
-      address: form.address.value.trim()
-    };
-    apiRequest('/api/auth/register', { method:'POST', body: JSON.stringify(payload) })
+
+    if (form.password.value !== form.confirmPassword.value){
+      msg.textContent = '两次输入的密码不一致';
+      msg.className = 'form-msg err';
+      msg.style.display = 'block';
+      return;
+    }
+
+    var formData = new FormData(form);
+    fetch('/api/auth/register', { method: 'POST', body: formData, credentials: 'same-origin' })
+      .then(function(res){
+        return res.json().then(function(data){
+          if (!res.ok) throw new Error(data.error || '注册失败');
+          return data;
+        });
+      })
       .then(function(){
-        msg.textContent = '注册申请已提交，请等待管理员审核，审核通过后即可使用手机号与密码登录。';
+        msg.textContent = '注册申请已提交，请等待管理员审核。审核通过后即可使用用户名与密码登录。';
         msg.className = 'form-msg ok';
         msg.style.display = 'block';
         form.reset();
+        refreshCaptcha();
       })
       .catch(function(err){
         msg.textContent = err.message;
         msg.className = 'form-msg err';
         msg.style.display = 'block';
+        refreshCaptcha();
       });
   });
 </script>

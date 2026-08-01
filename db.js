@@ -7,14 +7,12 @@ db.pragma('journal_mode = WAL');
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    real_name TEXT NOT NULL,
-    phone TEXT NOT NULL UNIQUE,
-    id_card_encrypted TEXT NOT NULL,
-    id_card_last4 TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL,
     password_hash TEXT NOT NULL,
-    level TEXT DEFAULT '',
-    email TEXT DEFAULT '',
-    address TEXT DEFAULT '',
+    level TEXT NOT NULL DEFAULT '',
+    id_card_front TEXT NOT NULL DEFAULT '',
+    id_card_back TEXT NOT NULL DEFAULT '',
     member_tier TEXT NOT NULL DEFAULT 'free',
     status TEXT NOT NULL DEFAULT 'pending',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
