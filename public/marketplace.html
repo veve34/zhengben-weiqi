@@ -92,21 +92,15 @@
             <label>标题 <span class="req">*</span></label>
             <input type="text" name="title" placeholder="例如：楠木棋墩 二手转让" required>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>分类</label>
-              <select name="category">
-                <option>棋盘</option>
-                <option>棋罐</option>
-                <option>棋子</option>
-                <option>计时器</option>
-                <option selected>其他</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>价格（元）</label>
-              <input type="text" name="price" placeholder="例如：800">
-            </div>
+          <div class="form-group full" style="margin-bottom:16px;">
+            <label>分类</label>
+            <select name="category">
+              <option>棋盘</option>
+              <option>棋罐</option>
+              <option>棋子</option>
+              <option>计时器</option>
+              <option selected>其他</option>
+            </select>
           </div>
           <div class="form-group full" style="margin-bottom:16px;">
             <label>使用状况说明</label>
@@ -193,7 +187,6 @@
           '<span class="sep">|</span>' + escapeHtml(l.category) + '</div>' +
           '<h4>' + escapeHtml(l.title) + '</h4>' +
           '<div class="desc">' + escapeHtml(l.description) + '</div>' +
-          (l.price ? '<div class="price">￥' + escapeHtml(l.price) + '</div>' : '') +
           ownNote +
           '</div></div>';
       }).join('');
@@ -300,7 +293,6 @@
         (l.status === 'sold' ? '<span style="color:#a94442;margin-left:8px;">（已售出）</span>' : '') +
         (l.status === 'pending' ? '<span style="color:#7a5a12;margin-left:8px;">（审核中）</span>' : '') +
         (l.status === 'rejected' ? '<span style="color:#a94442;margin-left:8px;">（未通过审核）</span>' : '') + '</div>' +
-        (l.price ? '<div style="font-size:22px;color:var(--pine-700);font-weight:700;">￥' + escapeHtml(l.price) + '</div>' : '') +
         '<p style="margin:12px 0;white-space:pre-wrap;">' + escapeHtml(l.description) + '</p>' +
         '<div class="notice">联系方式：' + escapeHtml(l.contact_info) + '（发布人：' + escapeHtml(l.seller_name) + '）</div>' +
         ownerActions +

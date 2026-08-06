@@ -74,7 +74,6 @@ router.post('/', requireMember, function (req, res) {
     var title = String(body.title || '').trim();
     var category = CATEGORIES.indexOf(body.category) !== -1 ? body.category : '其他';
     var description = String(body.description || '').trim();
-    var price = String(body.price || '').trim();
     var contactInfo = String(body.contactInfo || '').trim();
 
     if (!title) return res.status(400).json({ error: '请填写标题' });
@@ -82,9 +81,10 @@ router.post('/', requireMember, function (req, res) {
     if (!req.files || !req.files.length) return res.status(400).json({ error: '请至少上传一张物品照片' });
 
     // 发布后进入待审核状态，需管理员审核通过才会对外公开
+    // 平台定位为信息发布，不收集价格；listings.price 栏位保留但不再写入
     var result = db.prepare(
-      "INSERT INTO listings (user_id, title, category, description, price, contact_info, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')"
-    ).run(req.member.id, title, category, description, price, contactInfo);
+      "INSERT INTO listings (user_id, title, category, description, price, contact_info, status) VALUES (?, ?, ?, ?, '', ?, 'pending')"
+    ).run(req.member.id, title, category, description, contactInfo);
 
     var insertImage = db.prepare('INSERT INTO listing_images (listing_id, file_name, sort_order) VALUES (?, ?, ?)');
     req.files.forEach(function (file, index) {

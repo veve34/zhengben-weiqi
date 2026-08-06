@@ -44,6 +44,36 @@
       <div class="member-card" id="memberCard">
         <div class="empty-hint">载入中…</div>
       </div>
+
+      <!-- 入驻列表公开显示的资料，由会员自行维护 -->
+      <div class="member-card" id="profileCard" style="margin-top:24px;display:none;">
+        <h4 style="font-size:16px;color:var(--pine-800);margin-bottom:8px;">入驻资料</h4>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:20px;">以下内容会显示在<a href="directory.html" style="color:var(--pine-600);text-decoration:underline;">入驻列表</a>上，供其他棋友了解与联系您。</p>
+        <form id="profileForm">
+          <div class="form-group full" style="margin-bottom:18px;">
+            <label>棋力水平</label>
+            <select name="level">
+              <option value="">未填写</option>
+              <option>零基础</option>
+              <option>入门级位</option>
+              <option>业余段位</option>
+              <option>职业棋手</option>
+            </select>
+          </div>
+          <div class="form-group full" style="margin-bottom:18px;">
+            <label>个人简介</label>
+            <textarea name="bio" rows="4" maxlength="200" placeholder="简单介绍自己，例如棋龄、偏好的棋具类型等（200字以内）"></textarea>
+            <div class="hint"><span id="bioCount">0</span> / 200 字</div>
+          </div>
+          <div class="form-group full" style="margin-bottom:18px;">
+            <label>联系方式</label>
+            <input type="text" name="contact" maxlength="100" placeholder="例如：微信 your_id（会公开显示，请自行判断愿意公开的范围）">
+            <div class="hint">此栏位会对所有访问者公开，建议填写微信号或做过遮蔽的手机号</div>
+          </div>
+          <button type="submit" class="submit-btn">保存入驻资料</button>
+          <div class="form-msg ok" id="profileMsg"></div>
+        </form>
+      </div>
     </div>
   </section>
 
@@ -79,13 +109,13 @@
     var card = document.getElementById('memberCard');
     if (!member){
       card.innerHTML = '<div class="empty-hint">尚未登录，请先<a href="login.html" style="color:var(--pine-600);text-decoration:underline;">前往登录</a></div>';
+      document.getElementById('profileCard').style.display = 'none';
       return;
     }
     card.innerHTML =
       '<div class="row"><span>用户名</span><span>' + escapeHtml(member.username) + '</span></div>' +
       '<div class="row"><span>邮箱</span><span>' + escapeHtml(member.email) + '</span></div>' +
       '<div class="row"><span>实名审核</span><span class="tier-tag">已通过</span></div>' +
-      '<div class="row"><span>棋力水平</span><span>' + escapeHtml(member.level || '未填写') + '</span></div>' +
       '<div class="row"><span>会员等级</span><span class="tier-tag">' + (member.member_tier === 'free' ? '基础会员' : member.member_tier) + '</span></div>' +
       '<div class="row"><span>注册时间</span><span>' + member.created_at + '</span></div>' +
       '<button class="submit-btn" style="margin-top:20px;" id="logoutBtn">退出登录</button>';
@@ -94,7 +124,44 @@
         window.location.href = 'index.html';
       });
     });
+
+    // 带入现有的入驻资料
+    var form = document.getElementById('profileForm');
+    form.level.value = member.level || '';
+    form.bio.value = member.bio || '';
+    form.contact.value = member.contact || '';
+    updateBioCount();
+    document.getElementById('profileCard').style.display = '';
   }
+
+  function updateBioCount(){
+    var bio = document.getElementById('profileForm').bio.value;
+    document.getElementById('bioCount').textContent = bio.length;
+  }
+
+  document.getElementById('profileForm').bio.addEventListener('input', updateBioCount);
+
+  document.getElementById('profileForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = e.target;
+    var msg = document.getElementById('profileMsg');
+    apiRequest('/api/member/me', {
+      method: 'PUT',
+      body: JSON.stringify({
+        level: form.level.value,
+        bio: form.bio.value.trim(),
+        contact: form.contact.value.trim()
+      })
+    }).then(function(){
+      msg.textContent = '已保存，入驻列表上的资料已更新。';
+      msg.className = 'form-msg ok';
+      msg.style.display = 'block';
+    }).catch(function(err){
+      msg.textContent = err.message;
+      msg.className = 'form-msg err';
+      msg.style.display = 'block';
+    });
+  });
 
   document.addEventListener('session-ready', function(e){ renderMemberCard(e.detail.member); });
 </script>

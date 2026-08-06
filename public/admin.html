@@ -73,7 +73,7 @@
         <option value="all">全部</option>
       </select>
       <table>
-        <thead><tr><th>照片</th><th>标题 / 说明</th><th>发布人</th><th>联系方式</th><th>价格</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+        <thead><tr><th>照片</th><th>标题 / 说明</th><th>发布人</th><th>联系方式</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
         <tbody id="listingList"></tbody>
       </table>
     </div>
@@ -219,7 +219,6 @@
           escapeHtml(l.description).slice(0, 80) + '…</div></td>' +
           '<td>' + escapeHtml(l.seller_name) + '</td>' +
           '<td style="font-size:12px;">' + escapeHtml(l.contact_info) + '<div style="color:#5c6f68;">注册号 ' + l.seller_phone + '</div></td>' +
-          '<td>' + (l.price ? '￥' + escapeHtml(l.price) : '—') + '</td>' +
           '<td style="font-size:12px;">' + l.created_at + '</td>' +
           '<td><span class="status-tag status-' + l.status + '">' + LISTING_STATUS_LABEL[l.status] + '</span></td>' +
           '<td class="row-actions">' + actions.join(' ') + '</td>' +
