@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入驻列表 - 正本围棋</title>
+<meta name="description" content="正本围棋已通过实名审核的入驻会员列表，可查看简介、发布信息数与联系方式。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="mark"></div>
+        <div class="text">
+          <h1>正本围棋</h1>
+          <span>ZHENGBEN WEIQI · 二手棋具交易信息发布平台</span>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="marketplace.html">二手棋具交易</a></li>
+          <li><a href="directory.html" class="active">入驻列表</a></li>
+          <li><a href="knowledge.html">围棋知识</a></li>
+          <li><a href="member-center.html" data-member-only style="display:none">会员中心</a></li>
+          <li><a href="register.html" data-guest-only>注册</a></li>
+          <li><a href="login.html" data-guest-only>登录</a></li>
+          <li><a id="logoutLink" data-member-only style="display:none">登出</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-banner">
+    <div class="inner">
+      <div class="en">Verified Members</div>
+      <h2>入驻列表</h2>
+      <p>以下会员均已通过平台实名审核，可自主发布二手棋具转让信息。您可以直接依其预留的方式与本人沟通对接。</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-inner">
+      <div class="directory-summary" id="directorySummary">正在载入…</div>
+      <div class="directory-grid" id="directoryGrid"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-about">
+        <h4>关于正本围棋</h4>
+        <p>正本围棋是一个面向围棋爱好者的二手棋具交易信息发布平台。会员通过实名审核后，可自主发布闲置棋具的转让信息，由买卖双方自行沟通、线下完成交易；平台不直接经营交易服务，也不参与、不担保交易过程。此外平台也整理围棋基础知识内容，供棋友参考。</p>
+      </div>
+      <div class="footer-contact">
+        <h4>联系方式</h4>
+        <ul>
+          <li>主办单位：杭州精尖硬核棋道信息科技有限公司</li>
+          <li>网站名称：正本围棋</li>
+          <li>网站域名：jingjianyinghe.com</li>
+          <li>邮箱：contact@jingjianyinghe.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-beian">
+      <p>主办者名称：杭州精尖硬核棋道信息科技有限公司</p>
+      <p>
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">浙ICP备2026043380号</a>
+        &nbsp;|&nbsp; 网站备案号：浙ICP备2026043380号-1
+      </p>
+      <p>© 2026 正本围棋 版权所有</p>
+    </div>
+  </footer>
+
+<script src="js/common.js"></script>
+<script>
+  function loadDirectory(){
+    var grid = document.getElementById('directoryGrid');
+    var summary = document.getElementById('directorySummary');
+    apiRequest('/api/directory').then(function(data){
+      if (!data.members.length){
+        summary.textContent = '';
+        grid.innerHTML = '<div class="empty-hint">目前还没有通过审核的入驻会员</div>';
+        return;
+      }
+      summary.innerHTML = '目前共有 <strong>' + data.total + '</strong> 位会员通过实名审核入驻';
+      grid.innerHTML = data.members.map(function(m){
+        var initial = m.username ? m.username.charAt(0).toUpperCase() : '?';
+        return '<div class="member-item">' +
+          '<div class="top">' +
+          '<div class="avatar">' + escapeHtml(initial) + '</div>' +
+          '<h4>' + escapeHtml(m.username) + '</h4>' +
+          '<span class="verified-tag">✓ 已实名认证</span>' +
+          '</div>' +
+          (m.level ? '<div class="level">棋力水平：' + escapeHtml(m.level) + '</div>' : '') +
+          '<div class="bio">' + escapeHtml(m.bio || '这位会员还没有填写简介。') + '</div>' +
+          '<div class="stats">' +
+          '<div><strong>' + m.listing_count + '</strong>已发布信息（条）</div>' +
+          '<div><strong>' + m.joined_days + '</strong>入驻天数</div>' +
+          '</div>' +
+          '<div class="contact"><span>联系方式：</span>' + escapeHtml(m.contact || '未提供') + '</div>' +
+          '</div>';
+      }).join('');
+    }).catch(function(){
+      summary.textContent = '';
+      grid.innerHTML = '<div class="empty-hint">载入失败，请稍后重试</div>';
+    });
+  }
+
+  loadDirectory();
+</script>
+</body>
+</html>

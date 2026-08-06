@@ -11,6 +11,7 @@ const adminMembersRoutes = require('./routes/adminMembers');
 const listingRoutes = require('./routes/listings');
 const adminListingsRoutes = require('./routes/adminListings');
 const captchaRoutes = require('./routes/captcha');
+const directoryRoutes = require('./routes/directory');
 
 if (!process.env.JWT_SECRET || !process.env.ADMIN_PASSWORD) {
   console.error('请先复制 .env.example 为 .env，并设置 JWT_SECRET 与 ADMIN_PASSWORD');
@@ -31,6 +32,7 @@ app.use('/api/admin/members', adminMembersRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/admin/listings', adminListingsRoutes);
 app.use('/api/captcha', captchaRoutes);
+app.use('/api/directory', directoryRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {

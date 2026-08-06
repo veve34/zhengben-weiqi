@@ -11,6 +11,8 @@ db.exec(`
     email TEXT NOT NULL,
     password_hash TEXT NOT NULL,
     level TEXT NOT NULL DEFAULT '',
+    bio TEXT NOT NULL DEFAULT '',
+    contact TEXT NOT NULL DEFAULT '',
     id_card_front TEXT NOT NULL DEFAULT '',
     id_card_back TEXT NOT NULL DEFAULT '',
     member_tier TEXT NOT NULL DEFAULT 'free',
@@ -62,6 +64,15 @@ db.exec(`
 var articleColumns = db.prepare('PRAGMA table_info(articles)').all().map(function (c) { return c.name; });
 if (articleColumns.indexOf('content') === -1) {
   db.exec("ALTER TABLE articles ADD COLUMN content TEXT NOT NULL DEFAULT ''");
+}
+
+// 入驻列表所需的栏位，同样替既有资料库补上
+var userColumns = db.prepare('PRAGMA table_info(users)').all().map(function (c) { return c.name; });
+if (userColumns.indexOf('bio') === -1) {
+  db.exec("ALTER TABLE users ADD COLUMN bio TEXT NOT NULL DEFAULT ''");
+}
+if (userColumns.indexOf('contact') === -1) {
+  db.exec("ALTER TABLE users ADD COLUMN contact TEXT NOT NULL DEFAULT ''");
 }
 
 // content 内的 {{diagram:名称}} 会被前台替换成对应的棋盘示意图（见 public/js/board-diagram.js）

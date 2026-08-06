@@ -118,6 +118,28 @@ body > section > .knowledge-layout{ width:100%; margin-top:auto; margin-bottom:a
 .go-diagram figcaption{ font-size:13px; color:var(--text-light); margin-top:12px; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.7; }
 .article-section .go-diagram-svg[viewBox^="0 0 4"]{ max-width:420px; }
 
+/* ---------- 入驻列表 ---------- */
+.directory-summary{ max-width:1180px; margin:0 auto 24px; font-size:14px; color:var(--text-light); }
+.directory-summary strong{ color:var(--pine-700); font-size:18px; }
+.directory-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1180px; margin:0 auto; }
+.member-item{ background:#fff; border:1px solid #e1ece7; border-radius:8px; padding:22px; display:flex; flex-direction:column; }
+.member-item:hover{ border-color:var(--pine-500); box-shadow:0 8px 20px rgba(18,59,48,.10); }
+.member-item .top{ display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
+.member-item .avatar{
+  width:38px; height:38px; border-radius:50%; flex-shrink:0;
+  background:radial-gradient(circle at 35% 30%, var(--pine-500), var(--pine-800));
+  color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;
+}
+.member-item h4{ font-size:16px; color:var(--pine-800); word-break:break-all; }
+.verified-tag{ display:inline-flex; align-items:center; gap:3px; background:#e5f3ec; color:var(--pine-700); border:1px solid var(--pine-400); font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; white-space:nowrap; }
+.member-item .level{ font-size:12px; color:var(--text-light); margin-bottom:10px; }
+.member-item .bio{ font-size:13px; color:var(--text-light); line-height:1.8; flex:1; margin-bottom:14px; }
+.member-item .stats{ display:flex; gap:18px; padding:12px 0; border-top:1px dashed #d3e3db; border-bottom:1px dashed #d3e3db; margin-bottom:12px; }
+.member-item .stats div{ font-size:12px; color:var(--text-light); }
+.member-item .stats strong{ display:block; font-size:17px; color:var(--pine-700); }
+.member-item .contact{ font-size:12px; color:var(--text-dark); word-break:break-all; }
+.member-item .contact span{ color:var(--text-light); }
+
 /* ---------- 二手棋具交易：左右分栏布局 ---------- */
 .page-banner{
   background:
@@ -254,6 +276,7 @@ footer a:hover{ color:var(--gold); }
   .knowledge-grid{ grid-template-columns:repeat(2,1fr); }
   .equip-grid{ grid-template-columns:repeat(2,1fr); }
   .listing-grid{ grid-template-columns:repeat(2,1fr); }
+  .directory-grid{ grid-template-columns:repeat(2,1fr); }
   .knowledge-layout{ grid-template-columns:1fr; }
   .knowledge-toc{ position:static; }
   .article-section{ padding:24px 20px; }
