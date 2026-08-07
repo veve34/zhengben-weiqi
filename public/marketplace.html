@@ -108,7 +108,7 @@
           </div>
           <div class="form-group full" style="margin-bottom:16px;">
             <label>联系方式 <span class="req">*</span></label>
-            <input type="text" name="contactInfo" placeholder="电话/微信号等，方便买家联系您" required>
+            <input type="tel" name="contactInfo" placeholder="请填写联系电话，方便买家与您联系" required>
           </div>
           <div class="form-group full" style="margin-bottom:16px;">
             <label>物品照片（最多5张，JPG/PNG/WEBP） <span class="req">*</span></label>
@@ -141,6 +141,8 @@
           <li>主办单位：杭州精尖硬核棋道信息科技有限公司</li>
           <li>网站名称：正本围棋</li>
           <li>网站域名：jingjianyinghe.com</li>
+          <li>单位地址：浙江省杭州市滨江区西兴街道西兴街54号19707室</li>
+          <li>联系电话：13472549301</li>
           <li>邮箱：contact@jingjianyinghe.com</li>
         </ul>
       </div>
@@ -170,9 +172,8 @@
       }
       list.innerHTML = data.listings.map(function(l){
         var badge = '';
-        if (l.status === 'sold') badge = '<span class="sold-badge">已售出</span>';
-        else if (l.status === 'pending') badge = '<span class="sold-badge" style="background:#7a5a12;">审核中</span>';
-        else if (l.status === 'rejected') badge = '<span class="sold-badge">未通过</span>';
+        if (l.status === 'pending') badge = '<span class="card-badge" style="background:#7a5a12;">审核中</span>';
+        else if (l.status === 'rejected') badge = '<span class="card-badge">未通过</span>';
         var photo = l.cover_image
           ? '<img src="' + l.cover_image + '" alt="">'
           : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--pine-500);font-size:28px;">棋</div>';
@@ -268,7 +269,6 @@
         if (l.status === 'pending') ownHint = '<div class="notice" style="margin-bottom:12px;">这条信息正在等待管理员审核，通过后才会对外公开，目前只有您自己看得到。</div>';
         else if (l.status === 'rejected') ownHint = '<div class="notice" style="background:#fbeaea;border-color:#e3b0b0;color:#9c3a3a;margin-bottom:12px;">这条信息未通过审核，不会对外公开。如有疑问请联系客服。</div>';
         ownerActions = ownHint + '<div style="margin:16px 0;display:flex;gap:10px;">' +
-          (l.status === 'active' ? '<button class="code-btn" id="markSoldBtn">标记为已售出</button>' : '') +
           '<button class="code-btn danger" id="removeListingBtn">删除此信息</button></div>';
       }
 
@@ -290,7 +290,6 @@
         '<div style="font-size:12px;color:var(--text-light);margin:16px 0 8px;">' +
         l.created_at.slice(0, 10) + ' &nbsp;|&nbsp; 发布人：' + escapeHtml(l.seller_name) +
         ' &nbsp;|&nbsp; ' + escapeHtml(l.category) +
-        (l.status === 'sold' ? '<span style="color:#a94442;margin-left:8px;">（已售出）</span>' : '') +
         (l.status === 'pending' ? '<span style="color:#7a5a12;margin-left:8px;">（审核中）</span>' : '') +
         (l.status === 'rejected' ? '<span style="color:#a94442;margin-left:8px;">（未通过审核）</span>' : '') + '</div>' +
         '<p style="margin:12px 0;white-space:pre-wrap;">' + escapeHtml(l.description) + '</p>' +
@@ -308,13 +307,6 @@
           apiRequest('/api/listings/' + id + '/comments', { method: 'POST', body: JSON.stringify({ content: content }) })
             .then(function(){ openListingDetail(id); })
             .catch(function(err){ alert(err.message); });
-        });
-      }
-      var markSoldBtn = document.getElementById('markSoldBtn');
-      if (markSoldBtn){
-        markSoldBtn.addEventListener('click', function(){
-          apiRequest('/api/listings/' + id, { method: 'PUT', body: JSON.stringify({ status: 'sold' }) })
-            .then(function(){ openListingDetail(id); loadListings(); });
         });
       }
       var removeBtn = document.getElementById('removeListingBtn');

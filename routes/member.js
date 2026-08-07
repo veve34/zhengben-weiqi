@@ -34,4 +34,29 @@ router.put('/me', requireMember, function (req, res) {
   res.json({ ok: true });
 });
 
+// 会员自己发布过的信息，含待审核与未通过的，供会员中心的「我发布的信息」使用。
+// 已删除（removed）的不回传。
+router.get('/listings', requireMember, function (req, res) {
+  var rows = db.prepare(
+    "SELECT id, title, category, description, status, created_at FROM listings " +
+    "WHERE user_id = ? AND status != 'removed' ORDER BY created_at DESC, id DESC"
+  ).all(req.member.id);
+
+  rows.forEach(function (row) {
+    var cover = db.prepare(
+      'SELECT file_name FROM listing_images WHERE listing_id = ? ORDER BY sort_order ASC, id ASC LIMIT 1'
+    ).get(row.id);
+    row.cover_image = cover ? '/uploads/listings/' + cover.file_name : null;
+  });
+
+  res.json({
+    listings: rows,
+    counts: {
+      pending: rows.filter(function (r) { return r.status === 'pending'; }).length,
+      active: rows.filter(function (r) { return r.status === 'active'; }).length,
+      rejected: rows.filter(function (r) { return r.status === 'rejected'; }).length
+    }
+  });
+});
+
 module.exports = router;

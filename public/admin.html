@@ -27,7 +27,6 @@
   .status-approved{ background:#e5f3ec; color:#123b30; }
   .status-rejected{ background:#fbeaea; color:#9c3a3a; }
   .status-active{ background:#e5f3ec; color:#123b30; }
-  .status-sold{ background:#fbf3e3; color:#7a5a12; }
   .status-removed{ background:#fbeaea; color:#9c3a3a; }
   button.approve{ background:var(--pine-600); }
   .idcard-link{ display:inline-block; padding:4px 10px; background:var(--pine-50); border:1px solid #c9dbd2; border-radius:4px; font-size:12px; color:var(--pine-700); text-decoration:none; }
@@ -66,8 +65,7 @@
       <h3 style="margin-top:0;">二手棋具信息</h3>
       <select id="listingStatusFilter">
         <option value="pending">待审核</option>
-        <option value="active">已通过（在售）</option>
-        <option value="sold">已售出</option>
+        <option value="active">已通过（已发布）</option>
         <option value="rejected">未通过</option>
         <option value="removed">已下架</option>
         <option value="all">全部</option>
@@ -175,7 +173,7 @@
   document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
 
   var LISTING_STATUS_LABEL = {
-    pending: '待审核', active: '在售', sold: '已售出', rejected: '未通过', removed: '已下架'
+    pending: '待审核', active: '已发布', rejected: '未通过', removed: '已删除'
   };
   var LISTING_ACTION_CONFIRM = {
     approve: null,
@@ -202,7 +200,7 @@
         if (l.status === 'pending' || l.status === 'rejected'){
           actions.push('<button class="approve" data-id="' + l.id + '" data-action="approve">通过</button>');
         }
-        if (l.status === 'pending' || l.status === 'active' || l.status === 'sold'){
+        if (l.status === 'pending' || l.status === 'active'){
           actions.push('<button class="danger" data-id="' + l.id + '" data-action="reject">驳回</button>');
         }
         if (l.status !== 'removed'){

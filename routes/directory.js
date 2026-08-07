@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', function (req, res) {
   var rows = db.prepare(
     "SELECT u.id, u.username, u.bio, u.contact, u.level, u.created_at, " +
-    "(SELECT COUNT(*) FROM listings l WHERE l.user_id = u.id AND l.status IN ('active','sold')) AS listing_count " +
+    "(SELECT COUNT(*) FROM listings l WHERE l.user_id = u.id AND l.status = 'active') AS listing_count " +
     "FROM users u WHERE u.status = 'approved' ORDER BY u.created_at ASC, u.id ASC"
   ).all();
 

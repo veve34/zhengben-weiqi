@@ -7,9 +7,9 @@ const router = express.Router();
 
 const CATEGORIES = ['棋盘', '棋罐', '棋子', '计时器', '其他'];
 
-// 公开可见的状态：审核通过（在售）与已售出。
-// pending（待审核）/ rejected（未通过）只有发布人本人看得到，removed（已下架）任何人都看不到。
-const PUBLIC_STATUSES = ['active', 'sold'];
+// 公开可见的状态：审核通过即公开。平台不设「已售出」状态，发布人不需要的信息自行删除即可。
+// pending（待审核）/ rejected（未通过）只有发布人本人看得到，removed（已删除）任何人都看不到。
+const PUBLIC_STATUSES = ['active'];
 const OWNER_ONLY_STATUSES = ['pending', 'rejected'];
 
 function attachImages(listing) {
@@ -22,7 +22,7 @@ function attachImages(listing) {
 router.get('/', optionalMember, function (req, res) {
   var category = req.query.category;
   var params = [];
-  var where = "(l.status IN ('active','sold')";
+  var where = "(l.status = 'active'";
   if (req.member) {
     where += " OR (l.user_id = ? AND l.status IN ('pending','rejected'))";
     params.push(req.member.id);
@@ -93,22 +93,6 @@ router.post('/', requireMember, function (req, res) {
 
     res.json({ ok: true, id: result.lastInsertRowid, status: 'pending' });
   });
-});
-
-router.put('/:id', requireMember, function (req, res) {
-  var listing = db.prepare('SELECT * FROM listings WHERE id = ?').get(req.params.id);
-  if (!listing) return res.status(404).json({ error: '找不到该信息' });
-  if (listing.user_id !== req.member.id) return res.status(403).json({ error: '只能修改自己发布的信息' });
-
-  var status = String((req.body && req.body.status) || '');
-  if (['active', 'sold'].indexOf(status) === -1) return res.status(400).json({ error: '状态参数不正确' });
-  // 待审核 / 未通过的信息尚未公开，不能由发布人自行改成在售或已售出
-  if (PUBLIC_STATUSES.indexOf(listing.status) === -1) {
-    return res.status(400).json({ error: '该信息尚未通过审核，暂时无法变更状态' });
-  }
-
-  db.prepare("UPDATE listings SET status = ?, updated_at = datetime('now') WHERE id = ?").run(status, listing.id);
-  res.json({ ok: true });
 });
 
 router.delete('/:id', requireMember, function (req, res) {

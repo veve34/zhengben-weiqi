@@ -66,13 +66,25 @@
             <div class="hint"><span id="bioCount">0</span> / 200 字</div>
           </div>
           <div class="form-group full" style="margin-bottom:18px;">
-            <label>联系方式</label>
-            <input type="text" name="contact" maxlength="100" placeholder="例如：微信 your_id（会公开显示，请自行判断愿意公开的范围）">
-            <div class="hint">此栏位会对所有访问者公开，建议填写微信号或做过遮蔽的手机号</div>
+            <label>联系电话</label>
+            <input type="tel" name="contact" maxlength="100" placeholder="请填写联系电话，方便棋友与您联系">
+            <div class="hint">此栏位会在入驻列表上对所有访问者公开显示，请自行判断愿意公开的范围</div>
           </div>
           <button type="submit" class="submit-btn">保存入驻资料</button>
           <div class="form-msg ok" id="profileMsg"></div>
         </form>
+      </div>
+
+      <!-- 我发布的信息 -->
+      <div class="member-card" id="myListingsCard" style="margin-top:24px;display:none;">
+        <h4 style="font-size:16px;color:var(--pine-800);margin-bottom:8px;">我发布的信息</h4>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:20px;">您发布的二手棋具信息与目前的审核状态。已删除的信息不会列出。</p>
+        <div class="tab-bar" id="listingTabs">
+          <button class="tab-btn active" data-status="pending">待审核<span class="count" id="countPending">0</span></button>
+          <button class="tab-btn" data-status="active">已发布<span class="count" id="countActive">0</span></button>
+          <button class="tab-btn" data-status="rejected">已驳回<span class="count" id="countRejected">0</span></button>
+        </div>
+        <div id="myListingList"><div class="empty-hint">载入中…</div></div>
       </div>
     </div>
   </section>
@@ -89,6 +101,8 @@
           <li>主办单位：杭州精尖硬核棋道信息科技有限公司</li>
           <li>网站名称：正本围棋</li>
           <li>网站域名：jingjianyinghe.com</li>
+          <li>单位地址：浙江省杭州市滨江区西兴街道西兴街54号19707室</li>
+          <li>联系电话：13472549301</li>
           <li>邮箱：contact@jingjianyinghe.com</li>
         </ul>
       </div>
@@ -163,7 +177,73 @@
     });
   });
 
-  document.addEventListener('session-ready', function(e){ renderMemberCard(e.detail.member); });
+  // ---------- 我发布的信息 ----------
+  var myListings = [];
+  var currentTab = 'pending';
+
+  var STATE_LABEL = { pending: '待审核', active: '已发布', rejected: '已驳回' };
+  var EMPTY_HINT = {
+    pending: '目前没有待审核的信息。',
+    active: '还没有已发布的信息。审核通过后会出现在这里。',
+    rejected: '没有被驳回的信息。'
+  };
+  var STATE_NOTE = {
+    pending: '<div class="note" style="color:#7a5a12;">正在等待管理员审核，通过后才会对外公开。</div>',
+    active: '<div class="note" style="color:var(--pine-600);">已通过审核，正在二手棋具交易页公开显示。</div>',
+    rejected: '<div class="note" style="color:#9c3a3a;">未通过审核，不会对外公开。如有疑问请联系客服。</div>'
+  };
+
+  function loadMyListings(){
+    apiRequest('/api/member/listings').then(function(data){
+      myListings = data.listings;
+      document.getElementById('countPending').textContent = data.counts.pending;
+      document.getElementById('countActive').textContent = data.counts.active;
+      document.getElementById('countRejected').textContent = data.counts.rejected;
+      renderMyListings();
+      document.getElementById('myListingsCard').style.display = '';
+    }).catch(function(){
+      document.getElementById('myListingList').innerHTML = '<div class="empty-hint">载入失败，请稍后重试</div>';
+      document.getElementById('myListingsCard').style.display = '';
+    });
+  }
+
+  function renderMyListings(){
+    var list = document.getElementById('myListingList');
+    var rows = myListings.filter(function(l){ return l.status === currentTab; });
+    if (!rows.length){
+      list.innerHTML = '<div class="empty-hint">' + EMPTY_HINT[currentTab] + '</div>';
+      return;
+    }
+    list.innerHTML = rows.map(function(l){
+      var photo = l.cover_image
+        ? '<img src="' + l.cover_image + '" alt="">'
+        : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--pine-500);">棋</div>';
+      return '<div class="my-listing">' +
+        '<div class="thumb">' + photo + '</div>' +
+        '<div class="info">' +
+        '<h5>' + escapeHtml(l.title) + '</h5>' +
+        '<div class="meta">' + l.created_at.slice(0, 10) + ' &nbsp;|&nbsp; ' + escapeHtml(l.category) + '</div>' +
+        STATE_NOTE[l.status] +
+        '</div>' +
+        '<div class="state"><span class="state-tag state-' + l.status + '">' + STATE_LABEL[l.status] + '</span></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  document.querySelectorAll('#listingTabs .tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#listingTabs .tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentTab = btn.getAttribute('data-status');
+      renderMyListings();
+    });
+  });
+
+  document.addEventListener('session-ready', function(e){
+    renderMemberCard(e.detail.member);
+    if (e.detail.member) loadMyListings();
+    else document.getElementById('myListingsCard').style.display = 'none';
+  });
 </script>
 </body>
 </html>
