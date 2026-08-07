@@ -38,6 +38,8 @@ npm start
 - `routes/adminListings.js` — 二手棋具管理（后台强制下架）
 - `routes/captcha.js`、`services/captcha.js` — 图形验证码（本地产生 SVG，不依赖任何外部服务）
 - `routes/directory.js` — 入驻列表（公开端点，只回传会员自愿公开的资料）
+- `seed-demo.js` — 灌入示范资料（`npm run seed:demo`，已有资料时会跳过）
+- `reset-demo.js` — 清掉旧的示范资料后重新灌入（`npm run reset:demo`，示范内容改版时用这支）
 - `middleware/upload.js` — 二手信息图片上传（multer，存于 `public/uploads/listings/`，可公开访问）
 - `middleware/uploadIdCard.js` — 身份证照片上传（存于 `data/id-cards/`，**不对外公开**，详见下方说明）
 - `public/*.html` — 会员网站前台，多页式结构（见下）
@@ -73,6 +75,18 @@ npm start
 ### 初始内容（示范数据）
 
 `npm run seed:demo` 会灌入 6 位已审核会员、10 条二手棋具信息与 9 条留言，作为板块上线时的初始内容，避免新站空白。**部署到正式环境后需要执行一次**，否则二手棋具交易页与入驻列表都会是空的。脚本会分别检查 `users` 与 `listings`，已存在的资料不会重复写入。
+
+#### 示范资料改版后要用 `reset:demo`，不是 `seed:demo`
+
+因为 `seed:demo` 在资料已存在时会跳过，所以**示范内容改版时，重跑 seed 是不会生效的**——旧资料会原封不动留着。已知的实际案例：入驻列表由 23 位减为 6 位、联系方式由微信改为手机号之后，正式机重跑 seed 仍显示旧的 23 位与微信。
+
+改版后请改用：
+
+```bash
+npm run reset:demo
+```
+
+`reset-demo.js` 会先清掉所有已知的示范帐号（含历来版本用过的 23 个用户名）及其发布的信息、图档与留言，再重新灌入最新的示范资料。它以固定的用户名清单比对，**真实注册的会员不会被删到**。
 
 所有示范资料的日期一律不早于 **2026-07-20**，且每条信息的发布时间都晚于其发布人的入驻时间。发布表单已移除价格栏位，前台与后台都不再显示价格。`listings.price` 栏位保留在资料表中但不再写入（一律为空字串），如需彻底移除请另写迁移。
 
