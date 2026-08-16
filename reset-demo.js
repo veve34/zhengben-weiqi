@@ -18,6 +18,8 @@ const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads', 'listings');
 // 历来所有版本用过的示范帐号，全部列出以便清理干净
 const DEMO_USERNAMES = [
   // 目前版本的 6 位
+  '张杰', '鲁学伟', '于啸', '刘天昊', '李文俊', '王晓强',
+  // 上一版同样 6 位，但用的是拼音帐号
   'jin_zhou', 'kaya_1969', 'haitao_qishe', 'yaqin_chen', 'xiaofeng_z', 'siyuan_go',
   // 旧版 23 位里多出来的 17 位
   'zhiqiang88', 'weimin_z', 'liwen_sun', 'meiling_h', 'jianhua_lin', 'zihan_xu',
