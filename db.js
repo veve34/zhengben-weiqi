@@ -75,6 +75,15 @@ if (userColumns.indexOf('contact') === -1) {
   db.exec("ALTER TABLE users ADD COLUMN contact TEXT NOT NULL DEFAULT ''");
 }
 
+// 实名审核用的证件资料，仅供管理员在后台核对，前台任何端点都不回传。
+// 注册流程目前不收集这两项，只有管理员从证件照片人工登录时才会有值。
+if (userColumns.indexOf('id_number') === -1) {
+  db.exec("ALTER TABLE users ADD COLUMN id_number TEXT NOT NULL DEFAULT ''");
+}
+if (userColumns.indexOf('address') === -1) {
+  db.exec("ALTER TABLE users ADD COLUMN address TEXT NOT NULL DEFAULT ''");
+}
+
 // content 内的 {{diagram:名称}} 会被前台替换成对应的棋盘示意图（见 public/js/board-diagram.js）
 var articleCount = db.prepare('SELECT COUNT(*) AS c FROM articles').get().c;
 if (articleCount === 0) {

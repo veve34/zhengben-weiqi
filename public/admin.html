@@ -5,95 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>正本围棋 - 内容管理后台</title>
 <style>
-  :root{ --pine-800:#123b30; --pine-700:#1a4d3e; --pine-600:#22604c; --pine-50:#f4f9f7; --text-light:#5c6f68; }
+  :root{
+    --pine-800:#123b30; --pine-700:#1a4d3e; --pine-600:#22604c;
+    --pine-50:#f4f9f7; --text-light:#5c6f68; --line:#e1ece7;
+    --sidebar-w:190px; --topbar-h:52px;
+  }
   *{ box-sizing:border-box; }
-  body{ font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif; background:var(--pine-50); margin:0; padding:30px; color:#1c2b26; }
-  h1{ color:var(--pine-800); font-size:20px; margin-bottom:20px; }
-  .panel{ max-width:900px; margin:0 auto; }
-  .card{ background:#fff; border:1px solid #dbe9e2; border-radius:8px; padding:24px; margin-bottom:20px; }
-  input, textarea{ width:100%; padding:8px 10px; border:1px solid #c9dbd2; border-radius:4px; font-size:14px; margin-bottom:10px; font-family:inherit; }
+  body{ font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif; background:var(--pine-50); margin:0; color:#1c2b26; font-size:14px; }
+  .hidden{ display:none !important; }
+
+  /* 登录页 */
+  #loginPanel{ max-width:360px; margin:80px auto; background:#fff; border:1px solid #dbe9e2; border-radius:8px; padding:24px; }
+  #loginPanel h1{ color:var(--pine-800); font-size:20px; margin:0 0 20px; }
+
+  /* 后台框架：左侧选单 + 顶栏 + 内容区 */
+  .sidebar{ position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w); background:var(--pine-800); color:#cfe3da; overflow-y:auto; }
+  .sidebar .brand{ height:var(--topbar-h); display:flex; align-items:center; gap:8px; padding:0 16px; color:#fff; font-weight:600; border-bottom:1px solid rgba(255,255,255,.08); }
+  .sidebar nav{ padding:8px 0; }
+  .sidebar a{ display:flex; align-items:center; gap:9px; padding:11px 16px; color:#cfe3da; text-decoration:none; font-size:13px; cursor:pointer; border-left:3px solid transparent; }
+  .sidebar a:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .sidebar a.active{ background:var(--pine-700); color:#fff; border-left-color:#8fd6b4; }
+
+  .topbar{ position:fixed; top:0; left:var(--sidebar-w); right:0; height:var(--topbar-h); background:#fff; border-bottom:1px solid var(--line);
+           display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:5; }
+  .topbar .title{ font-size:15px; font-weight:600; color:var(--pine-800); }
+  .topbar .right{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-light); }
+
+  .main{ margin-left:var(--sidebar-w); padding:calc(var(--topbar-h) + 20px) 20px 40px; }
+  .card{ background:#fff; border:1px solid #dbe9e2; border-radius:8px; padding:18px; margin-bottom:18px; }
+  .toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .toolbar .spacer{ flex:1; }
+
+  h1{ color:var(--pine-800); font-size:18px; margin:0 0 16px; }
+  h3{ margin:0 0 14px; font-size:15px; color:var(--pine-800); }
+
+  input, textarea, select{ padding:7px 10px; border:1px solid #c9dbd2; border-radius:4px; font-size:13px; font-family:inherit; }
+  input, textarea{ width:100%; margin-bottom:10px; }
+  .toolbar input, .toolbar select{ width:auto; margin-bottom:0; }
+  .toolbar input.search{ width:230px; }
   textarea{ min-height:70px; }
-  button{ padding:8px 18px; background:var(--pine-700); color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:13px; }
+
+  button{ padding:6px 14px; background:var(--pine-700); color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:12px; }
   button:hover{ background:var(--pine-800); }
   button.danger{ background:#a94442; }
-  table{ width:100%; border-collapse:collapse; font-size:13px; }
-  th, td{ text-align:left; padding:8px; border-bottom:1px solid #e1ece7; }
-  #loginPanel{ max-width:360px; margin:80px auto; }
-  .row-actions{ display:flex; gap:8px; }
-  .hidden{ display:none; }
-  select{ padding:8px 10px; border:1px solid #c9dbd2; border-radius:4px; font-size:13px; margin-bottom:14px; }
-  .status-tag{ font-size:12px; padding:2px 8px; border-radius:10px; }
-  .status-pending{ background:#fbf3e3; color:#7a5a12; }
-  .status-approved{ background:#e5f3ec; color:#123b30; }
-  .status-rejected{ background:#fbeaea; color:#9c3a3a; }
-  .status-active{ background:#e5f3ec; color:#123b30; }
-  .status-removed{ background:#fbeaea; color:#9c3a3a; }
   button.approve{ background:var(--pine-600); }
-  .idcard-link{ display:inline-block; padding:4px 10px; background:var(--pine-50); border:1px solid #c9dbd2; border-radius:4px; font-size:12px; color:var(--pine-700); text-decoration:none; }
+  button.ghost{ background:#fff; color:var(--pine-700); border:1px solid #c9dbd2; }
+  button.ghost:hover{ background:var(--pine-50); color:var(--pine-800); }
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; padding:9px 8px; border-bottom:1px solid var(--line); background:#fafcfb; color:var(--text-light); font-weight:600; font-size:12px; white-space:nowrap; }
+  td{ text-align:left; padding:9px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tr.detail-row > td{ background:#fafcfb; padding:16px; }
+  .row-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  .status-tag{ font-size:12px; padding:2px 8px; border-radius:10px; white-space:nowrap; }
+  .status-pending{ background:#fbf3e3; color:#7a5a12; }
+  .status-approved,.status-active{ background:#e5f3ec; color:#123b30; }
+  .status-rejected,.status-removed{ background:#fbeaea; color:#9c3a3a; }
+
+  .detail-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px 24px; margin-bottom:14px; }
+  .detail-grid div{ font-size:13px; }
+  .detail-grid .label{ color:var(--text-light); margin-right:6px; }
+  .idcards{ display:flex; gap:24px; flex-wrap:wrap; }
+  .idcards figure{ margin:0; }
+  .idcards figcaption{ font-size:12px; color:var(--text-light); margin-bottom:6px; }
+  .idcards img{ width:250px; border:1px solid #dbe9e2; border-radius:4px; background:#fff; display:block; }
+  .detail-name{ font-size:17px; color:var(--pine-800); margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+  #view-member-detail .detail-grid{ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px 32px; margin-bottom:22px; }
+  #view-member-detail .idcards img{ width:330px; }
+  .idcard-link{ display:inline-block; padding:3px 9px; background:var(--pine-50); border:1px solid #c9dbd2; border-radius:4px; font-size:12px; color:var(--pine-700); text-decoration:none; }
   .idcard-link:hover{ background:var(--pine-600); color:#fff; border-color:var(--pine-600); }
+  .empty{ text-align:center; color:var(--text-light); padding:22px; }
 </style>
 </head>
 <body>
 
-  <div id="loginPanel" class="card">
+  <div id="loginPanel">
     <h1>管理员登录</h1>
     <input type="password" id="adminPassword" placeholder="请输入管理员密码">
     <button id="adminLoginBtn">登录</button>
     <p id="loginError" style="color:#a94442;font-size:12px;"></p>
   </div>
 
-  <div id="panel" class="panel hidden">
-    <h1>正本围棋 · 会员审核</h1>
+  <div id="app" class="hidden">
+    <aside class="sidebar">
+      <div class="brand">◎ 正本围棋后台</div>
+      <nav>
+        <a data-view="members" class="active">👥 会员审核</a>
+        <a data-view="listings">📦 信息审核</a>
+        <a data-view="articles">📖 内容管理</a>
+      </nav>
+    </aside>
 
-    <div class="card">
-      <h3 style="margin-top:0;">会员审核</h3>
-      <select id="memberStatusFilter">
-        <option value="pending">待审核</option>
-        <option value="approved">已通过</option>
-        <option value="rejected">已驳回</option>
-        <option value="all">全部</option>
-      </select>
-      <table>
-        <thead><tr><th>用户名</th><th>邮箱</th><th>棋力</th><th>身份证照片</th><th>申请时间</th><th>状态</th><th>操作</th></tr></thead>
-        <tbody id="memberList"></tbody>
-      </table>
+    <div class="topbar">
+      <div class="title" id="viewTitle">会员审核</div>
+      <div class="right">
+        <span>欢迎，管理员</span>
+        <a href="/" target="_blank" rel="noopener"><button class="ghost">🏠 网站预览</button></a>
+        <button class="ghost" id="refreshBtn">↻ 刷新数据</button>
+        <button class="danger" id="logoutBtn">退出</button>
+      </div>
     </div>
 
-    <h1>正本围棋 · 二手棋具信息审核</h1>
+    <div class="main">
 
-    <div class="card">
-      <h3 style="margin-top:0;">二手棋具信息</h3>
-      <select id="listingStatusFilter">
-        <option value="pending">待审核</option>
-        <option value="active">已通过（已发布）</option>
-        <option value="rejected">未通过</option>
-        <option value="removed">已下架</option>
-        <option value="all">全部</option>
-      </select>
-      <table>
-        <thead><tr><th>照片</th><th>标题 / 说明</th><th>发布人</th><th>联系方式</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
-        <tbody id="listingList"></tbody>
-      </table>
-    </div>
+      <!-- 会员审核 -->
+      <section id="view-members" class="view">
+        <div class="card">
+          <h3>会员审核</h3>
+          <div class="toolbar">
+            <select id="memberStatusFilter">
+              <option value="pending">待审核</option>
+              <option value="approved">已通过</option>
+              <option value="rejected">已驳回</option>
+              <option value="all">全部</option>
+            </select>
+            <input class="search" id="memberSearch" placeholder="用户名 / 邮箱">
+            <div class="spacer"></div>
+            <span id="memberCount" style="font-size:12px;color:var(--text-light);"></span>
+          </div>
+          <table>
+            <thead><tr>
+              <th style="width:50px;">ID</th><th>用户名</th><th>邮箱</th><th>棋力</th>
+              <th>身份证照片</th><th>申请时间</th><th>状态</th><th style="width:210px;">操作</th>
+            </tr></thead>
+            <tbody id="memberList"></tbody>
+          </table>
+        </div>
+      </section>
 
-    <h1>正本围棋 · 围棋知识内容管理</h1>
+      <!-- 会员详情（点进单一帐号） -->
+      <section id="view-member-detail" class="view hidden">
+        <div class="card">
+          <div class="toolbar">
+            <button class="ghost" id="memberDetailBack">← 返回列表</button>
+            <div class="spacer"></div>
+            <span id="memberDetailActions" class="row-actions"></span>
+          </div>
+          <div id="memberDetailBody"></div>
+        </div>
+      </section>
 
-    <div class="card">
-      <h3 style="margin-top:0;">新增文章</h3>
-      <input type="text" id="newTag" placeholder="分类（例如：基础入门）">
-      <input type="text" id="newTitle" placeholder="标题">
-      <textarea id="newSummary" placeholder="摘要（列在标题下方的一句话）"></textarea>
-      <textarea id="newContent" placeholder="正文内容。段落之间空一行分隔；要插入棋盘示意图，在单独一行写 {{diagram:名称}}，可用名称：board19、liberties、capture、forbidden、ko、handicap、territory" style="min-height:160px;"></textarea>
-      <input type="number" id="newSort" placeholder="排序（数字越小越前面）" value="0">
-      <button id="addBtn">新增</button>
-    </div>
+      <!-- 信息审核 -->
+      <section id="view-listings" class="view hidden">
+        <div class="card">
+          <h3>二手棋具信息审核</h3>
+          <div class="toolbar">
+            <select id="listingStatusFilter">
+              <option value="pending">待审核</option>
+              <option value="active">已通过（已发布）</option>
+              <option value="rejected">未通过</option>
+              <option value="removed">已下架</option>
+              <option value="all">全部</option>
+            </select>
+            <input class="search" id="listingSearch" placeholder="标题 / 发布人 / 分类">
+            <div class="spacer"></div>
+            <span id="listingCount" style="font-size:12px;color:var(--text-light);"></span>
+          </div>
+          <table>
+            <thead><tr>
+              <th style="width:50px;">ID</th><th style="width:90px;">照片</th><th>标题 / 分类</th>
+              <th>发布人</th><th>联系方式</th><th>发布时间</th><th>状态</th><th style="width:230px;">操作</th>
+            </tr></thead>
+            <tbody id="listingList"></tbody>
+          </table>
+        </div>
+      </section>
 
-    <div class="card">
-      <h3 style="margin-top:0;">现有文章</h3>
-      <table>
-        <thead><tr><th>分类</th><th>标题</th><th>摘要</th><th>正文</th><th>排序</th><th>操作</th></tr></thead>
-        <tbody id="articleList"></tbody>
-      </table>
+      <!-- 内容管理 -->
+      <section id="view-articles" class="view hidden">
+        <div class="card">
+          <h3>新增文章</h3>
+          <input type="text" id="newTag" placeholder="分类（例如：基础入门）">
+          <input type="text" id="newTitle" placeholder="标题">
+          <textarea id="newSummary" placeholder="摘要（列在标题下方的一句话）"></textarea>
+          <textarea id="newContent" placeholder="正文内容。段落之间空一行分隔；要插入棋盘示意图，在单独一行写 {{diagram:名称}}，可用名称：board19、liberties、capture、forbidden、ko、handicap、territory" style="min-height:160px;"></textarea>
+          <input type="number" id="newSort" placeholder="排序（数字越小越前面）" value="0">
+          <button id="addBtn">新增</button>
+        </div>
+        <div class="card">
+          <h3>现有文章</h3>
+          <table>
+            <thead><tr><th>分类</th><th>标题</th><th>摘要</th><th>正文</th><th>排序</th><th>操作</th></tr></thead>
+            <tbody id="articleList"></tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -110,133 +208,304 @@
     });
   }
 
-  document.getElementById('adminLoginBtn').addEventListener('click', function(){
-    var password = document.getElementById('adminPassword').value;
-    apiRequest('/api/admin/login', { method:'POST', body: JSON.stringify({ password: password }) })
-      .then(function(){
-        document.getElementById('loginPanel').classList.add('hidden');
-        document.getElementById('panel').classList.remove('hidden');
-        loadArticles();
-        loadMembers();
-        loadListings();
-      })
-      .catch(function(err){
-        document.getElementById('loginError').textContent = err.message;
-      });
-  });
-
-  var STATUS_LABEL = { pending: '待审核', approved: '已通过', rejected: '已驳回' };
-
-  // 身份证照片存放在 public/ 之外，只能透过管理员端点取得，这里用新分页开启
-  function idCardLinks(m){
-    var parts = [];
-    if (m.has_id_card_front) parts.push('<a class="idcard-link" href="/api/admin/members/' + m.id + '/id-card/front" target="_blank" rel="noopener">正面</a>');
-    if (m.has_id_card_back) parts.push('<a class="idcard-link" href="/api/admin/members/' + m.id + '/id-card/back" target="_blank" rel="noopener">背面</a>');
-    return parts.length ? parts.join(' ') : '<span style="color:#a94442;font-size:12px;">未上传</span>';
-  }
-
-  function loadMembers(){
-    var status = document.getElementById('memberStatusFilter').value;
-    apiRequest('/api/admin/members?status=' + status).then(function(data){
-      var tbody = document.getElementById('memberList');
-      if (!data.members.length){
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#5c6f68;">没有符合条件的会员</td></tr>';
-        return;
-      }
-      tbody.innerHTML = data.members.map(function(m){
-        var actions = m.status === 'pending'
-          ? '<button class="approve" data-id="' + m.id + '" data-action="approve">通过</button> <button class="danger" data-id="' + m.id + '" data-action="reject">驳回</button>'
-          : '<button data-id="' + m.id + '" data-action="' + (m.status === 'approved' ? 'reject' : 'approve') + '">' + (m.status === 'approved' ? '改为驳回' : '改为通过') + '</button>';
-        return '<tr>' +
-          '<td>' + escapeHtml(m.username) + '</td>' +
-          '<td style="font-size:12px;">' + escapeHtml(m.email) + '</td>' +
-          '<td style="font-size:12px;">' + escapeHtml(m.level || '—') + '</td>' +
-          '<td class="row-actions">' + idCardLinks(m) + '</td>' +
-          '<td>' + m.created_at + '</td>' +
-          '<td><span class="status-tag status-' + m.status + '">' + STATUS_LABEL[m.status] + '</span></td>' +
-          '<td class="row-actions">' + actions + '</td>' +
-          '</tr>';
-      }).join('');
-
-      tbody.querySelectorAll('button[data-action]').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var id = btn.getAttribute('data-id');
-          var action = btn.getAttribute('data-action');
-          apiRequest('/api/admin/members/' + id + '/' + action, { method:'POST' })
-            .then(function(){ loadMembers(); })
-            .catch(function(err){ alert(err.message); });
-        });
-      });
-    });
-  }
-
-  document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
-
-  var LISTING_STATUS_LABEL = {
-    pending: '待审核', active: '已发布', rejected: '未通过', removed: '已删除'
-  };
-  var LISTING_ACTION_CONFIRM = {
-    approve: null,
-    reject: '确定要驳回这条信息吗？驳回后不会对外公开。',
-    remove: '确定要下架这条信息吗？'
-  };
-
   function escapeHtml(str){
     return String(str == null ? '' : str)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
 
-  function loadListings(){
-    var status = document.getElementById('listingStatusFilter').value;
-    apiRequest('/api/admin/listings?status=' + status).then(function(data){
-      var tbody = document.getElementById('listingList');
-      if (!data.listings.length){
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#5c6f68;">没有符合条件的信息</td></tr>';
-        return;
-      }
-      tbody.innerHTML = data.listings.map(function(l){
-        var actions = [];
-        if (l.status === 'pending' || l.status === 'rejected'){
-          actions.push('<button class="approve" data-id="' + l.id + '" data-action="approve">通过</button>');
-        }
-        if (l.status === 'pending' || l.status === 'active'){
-          actions.push('<button class="danger" data-id="' + l.id + '" data-action="reject">驳回</button>');
-        }
-        if (l.status !== 'removed'){
-          actions.push('<button class="danger" data-id="' + l.id + '" data-action="remove">下架</button>');
-        }
-        var thumb = l.images.length
-          ? '<img src="' + l.images[0] + '" style="width:76px;height:57px;object-fit:cover;border-radius:4px;" alt="">' +
-            (l.images.length > 1 ? '<div style="font-size:11px;color:#5c6f68;">共' + l.images.length + '张</div>' : '')
-          : '<span style="color:#5c6f68;font-size:12px;">无图</span>';
-        return '<tr>' +
-          '<td>' + thumb + '</td>' +
-          '<td style="max-width:280px;"><div style="font-weight:600;">' + escapeHtml(l.title) + '</div>' +
-          '<div style="font-size:12px;color:#5c6f68;margin-top:4px;">' + escapeHtml(l.category) + '｜' +
-          escapeHtml(l.description).slice(0, 80) + '…</div></td>' +
-          '<td>' + escapeHtml(l.seller_name) + '</td>' +
-          '<td style="font-size:12px;">' + escapeHtml(l.contact_info) + '<div style="color:#5c6f68;">注册号 ' + l.seller_phone + '</div></td>' +
-          '<td style="font-size:12px;">' + l.created_at + '</td>' +
-          '<td><span class="status-tag status-' + l.status + '">' + LISTING_STATUS_LABEL[l.status] + '</span></td>' +
-          '<td class="row-actions">' + actions.join(' ') + '</td>' +
-          '</tr>';
-      }).join('');
+  /* ---------- 登录 / 登出 ---------- */
 
-      tbody.querySelectorAll('button[data-action]').forEach(function(btn){
+  document.getElementById('adminLoginBtn').addEventListener('click', doLogin);
+  document.getElementById('adminPassword').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogin(){
+    var password = document.getElementById('adminPassword').value;
+    apiRequest('/api/admin/login', { method:'POST', body: JSON.stringify({ password: password }) })
+      .then(function(){
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('loginPanel').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        loadAll();
+      })
+      .catch(function(err){
+        document.getElementById('loginError').textContent = err.message;
+      });
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    apiRequest('/api/admin/logout', { method:'POST' }).then(function(){
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('loginPanel').classList.remove('hidden');
+    });
+  });
+
+  function loadAll(){ loadMembers(); loadListings(); loadArticles(); }
+  document.getElementById('refreshBtn').addEventListener('click', loadAll);
+
+  /* ---------- 左侧选单切换 ---------- */
+
+  var VIEW_TITLE = { members:'会员审核', listings:'二手棋具信息审核', articles:'围棋知识内容管理' };
+  // 会员详情不是选单项目，是从会员列表点进去的子页面
+  var VIEW_PARENT = { 'member-detail':'members' };
+
+  function showView(view, title){
+    document.querySelectorAll('.view').forEach(function(sec){ sec.classList.add('hidden'); });
+    document.getElementById('view-' + view).classList.remove('hidden');
+    document.getElementById('viewTitle').textContent = title || VIEW_TITLE[view] || '';
+
+    var navKey = VIEW_PARENT[view] || view;
+    document.querySelectorAll('.sidebar a[data-view]').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-view') === navKey);
+    });
+  }
+
+  document.querySelectorAll('.sidebar a[data-view]').forEach(function(link){
+    link.addEventListener('click', function(){
+      showView(link.getAttribute('data-view'));
+    });
+  });
+
+  /* ---------- 会员审核 ---------- */
+
+  var STATUS_LABEL = { pending:'待审核', approved:'已通过', rejected:'已驳回' };
+  var allMembers = [];
+
+  // 身份证照片存放在 public/ 之外，只能透过管理员端点取得（带 cookie 的同源请求）
+  function idCardUrl(id, side){ return '/api/admin/members/' + id + '/id-card/' + side; }
+
+  function idCardCell(m){
+    var parts = [];
+    if (m.has_id_card_front) parts.push('<a class="idcard-link" href="' + idCardUrl(m.id,'front') + '" target="_blank" rel="noopener">正面</a>');
+    if (m.has_id_card_back) parts.push('<a class="idcard-link" href="' + idCardUrl(m.id,'back') + '" target="_blank" rel="noopener">背面</a>');
+    return parts.length ? parts.join(' ') : '<span style="color:#a94442;font-size:12px;">未上传</span>';
+  }
+
+  function memberDetailHtml(m){
+    var cards = '';
+    if (m.has_id_card_front || m.has_id_card_back){
+      cards = '<div class="idcards">' +
+        (m.has_id_card_front ? '<figure><figcaption>身份证正面</figcaption><img src="' + idCardUrl(m.id,'front') + '" alt="身份证正面"></figure>' : '') +
+        (m.has_id_card_back ? '<figure><figcaption>身份证反面</figcaption><img src="' + idCardUrl(m.id,'back') + '" alt="身份证反面"></figure>' : '') +
+        '</div>';
+    } else {
+      cards = '<div style="color:#a94442;font-size:13px;">这位会员没有上传身份证照片。</div>';
+    }
+    return '<h2 class="detail-name">' + escapeHtml(m.username) +
+      ' <span class="status-tag status-' + m.status + '">' + STATUS_LABEL[m.status] + '</span></h2>' +
+      '<div class="detail-grid">' +
+      '<div><span class="label">用户名：</span>' + escapeHtml(m.username) + '</div>' +
+      '<div><span class="label">联系电话：</span>' + escapeHtml(m.contact || '未提供') + '</div>' +
+      '<div><span class="label">邮箱：</span>' + escapeHtml(m.email) + '</div>' +
+      '<div><span class="label">身份证号：</span>' + escapeHtml(m.id_number || '未登录') + '</div>' +
+      '<div><span class="label">棋力水平：</span>' + escapeHtml(m.level || '未填写') + '</div>' +
+      '<div><span class="label">住址：</span>' + escapeHtml(m.address || '未登录') + '</div>' +
+      '<div><span class="label">会员编号：</span>' + m.id + '</div>' +
+      '<div><span class="label">申请时间：</span>' + m.created_at + '</div>' +
+      '</div>' + cards;
+  }
+
+  // 点进单一帐号的详情页。已通过／已驳回的帐号不显示审核按钮，
+  // 只有待审核状态才需要「通过／驳回」这两个动作。
+  function openMemberDetail(id){
+    var m = allMembers.filter(function(x){ return String(x.id) === String(id); })[0];
+    if (!m) return;
+
+    document.getElementById('memberDetailBody').innerHTML = memberDetailHtml(m);
+
+    var actions = document.getElementById('memberDetailActions');
+    if (m.status === 'pending'){
+      actions.innerHTML = '<button class="approve" data-id="' + m.id + '" data-action="approve">通过</button> ' +
+                          '<button class="danger" data-id="' + m.id + '" data-action="reject">驳回</button>';
+      actions.querySelectorAll('button[data-action]').forEach(function(btn){
         btn.addEventListener('click', function(){
-          var action = btn.getAttribute('data-action');
-          var confirmMsg = LISTING_ACTION_CONFIRM[action];
-          if (confirmMsg && !confirm(confirmMsg)) return;
-          apiRequest('/api/admin/listings/' + btn.getAttribute('data-id') + '/' + action, { method:'POST' })
-            .then(function(){ loadListings(); })
+          apiRequest('/api/admin/members/' + btn.getAttribute('data-id') + '/' + btn.getAttribute('data-action'), { method:'POST' })
+            .then(function(){ showView('members'); loadMembers(); })
             .catch(function(err){ alert(err.message); });
         });
+      });
+    } else {
+      actions.innerHTML = '';
+    }
+
+    showView('member-detail', '会员详情 · ' + m.username);
+  }
+
+  document.getElementById('memberDetailBack').addEventListener('click', function(){
+    showView('members');
+  });
+
+  function renderMembers(){
+    var kw = document.getElementById('memberSearch').value.trim().toLowerCase();
+    var list = allMembers.filter(function(m){
+      if (!kw) return true;
+      return (m.username || '').toLowerCase().indexOf(kw) !== -1 ||
+             (m.email || '').toLowerCase().indexOf(kw) !== -1;
+    });
+
+    document.getElementById('memberCount').textContent = '共 ' + list.length + ' 位';
+    var tbody = document.getElementById('memberList');
+
+    if (!list.length){
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">没有符合条件的会员</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = list.map(function(m){
+      var actions = '<button class="ghost" data-open="' + m.id + '">查看</button> ';
+      if (m.status === 'pending'){
+        actions += '<button class="approve" data-id="' + m.id + '" data-action="approve">通过</button> ' +
+                   '<button class="danger" data-id="' + m.id + '" data-action="reject">驳回</button>';
+      }
+
+      return '<tr>' +
+        '<td>' + m.id + '</td>' +
+        '<td>' + escapeHtml(m.username) + '</td>' +
+        '<td style="font-size:12px;">' + escapeHtml(m.email) + '</td>' +
+        '<td style="font-size:12px;">' + escapeHtml(m.level || '—') + '</td>' +
+        '<td class="row-actions">' + idCardCell(m) + '</td>' +
+        '<td style="font-size:12px;">' + m.created_at + '</td>' +
+        '<td><span class="status-tag status-' + m.status + '">' + STATUS_LABEL[m.status] + '</span></td>' +
+        '<td class="row-actions">' + actions + '</td>' +
+        '</tr>';
+    }).join('');
+
+    tbody.querySelectorAll('button[data-open]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openMemberDetail(btn.getAttribute('data-open'));
+      });
+    });
+
+    tbody.querySelectorAll('button[data-action]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        apiRequest('/api/admin/members/' + btn.getAttribute('data-id') + '/' + btn.getAttribute('data-action'), { method:'POST' })
+          .then(loadMembers)
+          .catch(function(err){ alert(err.message); });
       });
     });
   }
 
+  function loadMembers(){
+    var status = document.getElementById('memberStatusFilter').value;
+    apiRequest('/api/admin/members?status=' + status).then(function(data){
+      allMembers = data.members;
+      renderMembers();
+    });
+  }
+
+  document.getElementById('memberStatusFilter').addEventListener('change', loadMembers);
+  document.getElementById('memberSearch').addEventListener('input', renderMembers);
+
+  /* ---------- 信息审核 ---------- */
+
+  var LISTING_STATUS_LABEL = { pending:'待审核', active:'已发布', rejected:'未通过', removed:'已下架' };
+  var LISTING_ACTION_CONFIRM = {
+    approve: null,
+    reject: '确定要驳回这条信息吗？驳回后不会对外公开。',
+    remove: '确定要下架这条信息吗？'
+  };
+  var allListings = [];
+
+  function listingDetailHtml(l){
+    var imgs = l.images.length
+      ? '<div class="idcards">' + l.images.map(function(src){
+          return '<figure><img src="' + src + '" style="width:200px;" alt=""></figure>';
+        }).join('') + '</div>'
+      : '<div style="color:var(--text-light);font-size:13px;">这条信息没有照片。</div>';
+
+    return '<div class="detail-grid">' +
+      '<div><span class="label">标题：</span>' + escapeHtml(l.title) + '</div>' +
+      '<div><span class="label">分类：</span>' + escapeHtml(l.category) + '</div>' +
+      '<div><span class="label">发布人：</span>' + escapeHtml(l.seller_name) + '</div>' +
+      '<div><span class="label">发布人邮箱：</span>' + escapeHtml(l.seller_email || '—') + '</div>' +
+      '<div><span class="label">联系方式：</span>' + escapeHtml(l.contact_info) + '</div>' +
+      '<div><span class="label">发布时间：</span>' + l.created_at + '</div>' +
+      '</div>' +
+      '<div style="margin-bottom:14px;"><span class="label" style="color:var(--text-light);">描述：</span><br>' +
+      escapeHtml(l.description).replace(/\n/g, '<br>') + '</div>' + imgs;
+  }
+
+  function renderListings(){
+    var kw = document.getElementById('listingSearch').value.trim().toLowerCase();
+    var list = allListings.filter(function(l){
+      if (!kw) return true;
+      return (l.title || '').toLowerCase().indexOf(kw) !== -1 ||
+             (l.seller_name || '').toLowerCase().indexOf(kw) !== -1 ||
+             (l.category || '').toLowerCase().indexOf(kw) !== -1;
+    });
+
+    document.getElementById('listingCount').textContent = '共 ' + list.length + ' 条';
+    var tbody = document.getElementById('listingList');
+
+    if (!list.length){
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">没有符合条件的信息</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = list.map(function(l){
+      var actions = ['<button class="ghost" data-toggle="' + l.id + '">查看</button>'];
+      if (l.status === 'pending' || l.status === 'rejected'){
+        actions.push('<button class="approve" data-id="' + l.id + '" data-action="approve">通过</button>');
+      }
+      if (l.status === 'pending' || l.status === 'active'){
+        actions.push('<button class="danger" data-id="' + l.id + '" data-action="reject">驳回</button>');
+      }
+      if (l.status !== 'removed'){
+        actions.push('<button class="danger" data-id="' + l.id + '" data-action="remove">下架</button>');
+      }
+      var thumb = l.images.length
+        ? '<img src="' + l.images[0] + '" style="width:76px;height:57px;object-fit:cover;border-radius:4px;" alt="">' +
+          (l.images.length > 1 ? '<div style="font-size:11px;color:var(--text-light);">共' + l.images.length + '张</div>' : '')
+        : '<span style="color:var(--text-light);font-size:12px;">无图</span>';
+
+      return '<tr>' +
+        '<td>' + l.id + '</td>' +
+        '<td>' + thumb + '</td>' +
+        '<td style="max-width:260px;"><div style="font-weight:600;">' + escapeHtml(l.title) + '</div>' +
+        '<div style="font-size:12px;color:var(--text-light);margin-top:4px;">' + escapeHtml(l.category) + '</div></td>' +
+        '<td>' + escapeHtml(l.seller_name) + '</td>' +
+        '<td style="font-size:12px;">' + escapeHtml(l.contact_info) + '</td>' +
+        '<td style="font-size:12px;">' + l.created_at + '</td>' +
+        '<td><span class="status-tag status-' + l.status + '">' + LISTING_STATUS_LABEL[l.status] + '</span></td>' +
+        '<td class="row-actions">' + actions.join(' ') + '</td>' +
+        '</tr>' +
+        '<tr class="detail-row hidden" id="listing-detail-' + l.id + '"><td colspan="8">' + listingDetailHtml(l) + '</td></tr>';
+    }).join('');
+
+    tbody.querySelectorAll('button[data-toggle]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var row = document.getElementById('listing-detail-' + btn.getAttribute('data-toggle'));
+        row.classList.toggle('hidden');
+        btn.textContent = row.classList.contains('hidden') ? '查看' : '收起';
+      });
+    });
+
+    tbody.querySelectorAll('button[data-action]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var action = btn.getAttribute('data-action');
+        var confirmMsg = LISTING_ACTION_CONFIRM[action];
+        if (confirmMsg && !confirm(confirmMsg)) return;
+        apiRequest('/api/admin/listings/' + btn.getAttribute('data-id') + '/' + action, { method:'POST' })
+          .then(loadListings)
+          .catch(function(err){ alert(err.message); });
+      });
+    });
+  }
+
+  function loadListings(){
+    var status = document.getElementById('listingStatusFilter').value;
+    apiRequest('/api/admin/listings?status=' + status).then(function(data){
+      allListings = data.listings;
+      renderListings();
+    });
+  }
+
   document.getElementById('listingStatusFilter').addEventListener('change', loadListings);
+  document.getElementById('listingSearch').addEventListener('input', renderListings);
+
+  /* ---------- 内容管理 ---------- */
 
   function loadArticles(){
     apiRequest('/api/articles').then(function(data){
@@ -255,7 +524,6 @@
       tbody.querySelectorAll('.saveBtn').forEach(function(btn){
         btn.addEventListener('click', function(){
           var tr = btn.closest('tr');
-          var id = tr.getAttribute('data-id');
           var payload = {
             tag: tr.querySelector('[data-field="tag"]').value,
             title: tr.querySelector('[data-field="title"]').value,
@@ -263,7 +531,7 @@
             content: tr.querySelector('[data-field="content"]').value,
             sortOrder: tr.querySelector('[data-field="sortOrder"]').value
           };
-          apiRequest('/api/articles/' + id, { method:'PUT', body: JSON.stringify(payload) })
+          apiRequest('/api/articles/' + tr.getAttribute('data-id'), { method:'PUT', body: JSON.stringify(payload) })
             .then(function(){ alert('已保存'); })
             .catch(function(err){ alert(err.message); });
         });
@@ -271,9 +539,8 @@
       tbody.querySelectorAll('.delBtn').forEach(function(btn){
         btn.addEventListener('click', function(){
           if (!confirm('确定删除这篇文章？')) return;
-          var id = btn.closest('tr').getAttribute('data-id');
-          apiRequest('/api/articles/' + id, { method:'DELETE' })
-            .then(function(){ loadArticles(); })
+          apiRequest('/api/articles/' + btn.closest('tr').getAttribute('data-id'), { method:'DELETE' })
+            .then(loadArticles)
             .catch(function(err){ alert(err.message); });
         });
       });
@@ -290,10 +557,7 @@
     };
     apiRequest('/api/articles', { method:'POST', body: JSON.stringify(payload) })
       .then(function(){
-        document.getElementById('newTag').value = '';
-        document.getElementById('newTitle').value = '';
-        document.getElementById('newSummary').value = '';
-        document.getElementById('newContent').value = '';
+        ['newTag','newTitle','newSummary','newContent'].forEach(function(id){ document.getElementById(id).value = ''; });
         document.getElementById('newSort').value = '0';
         loadArticles();
       })

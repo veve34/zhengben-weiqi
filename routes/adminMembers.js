@@ -11,7 +11,9 @@ router.use(requireAdmin);
 
 router.get('/', function (req, res) {
   var status = String(req.query.status || 'pending');
-  var cols = 'id, username, email, level, id_card_front, id_card_back, status, created_at';
+  // contact / id_number / address 仅在管理员端点回传，前台的入驻列表不含证件资料
+  var cols = 'id, username, email, level, contact, id_number, address, ' +
+    'id_card_front, id_card_back, status, created_at';
   var rows = status === 'all'
     ? db.prepare('SELECT ' + cols + ' FROM users ORDER BY id DESC').all()
     : db.prepare('SELECT ' + cols + ' FROM users WHERE status = ? ORDER BY id DESC').all(status);

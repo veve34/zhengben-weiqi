@@ -8,3 +8,7 @@ data/*.db-shm
 public/uploads/listings/*
 !public/uploads/listings/.gitkeep
 data/id-cards/
+
+# 证件资料（身份证号／住址），含敏感个资，不进版本库
+id-cards.local.json
+*.bak
